@@ -49,15 +49,27 @@ class ChatApp(App):
     """llm chat."""
 
     CSS_PATH = "chat.css"
+    BINDINGS = [
+        ("shift+right", "copy_text()", "Copy response text"),
+        ("shift+up", "focus_input()", "focus input"),
+    ]
 
     def compose(self) -> ComposeResult:
         yield Prompt()
         with VerticalScroll(id="markdown"):
             yield MarkdownMem(id="results")
+        yield Footer()
 
     def on_mount(self) -> None:
         """Called when app starts."""
         # Give the input focus, so we can start typing straight away
+        self.query_one(Input).focus()
+
+    def action_copy_text(self) -> None:
+        markdown_mem = self.query_one("#results", Markdown)
+        pyperclip.copy(markdown_mem._text)
+
+    def action_focus_input(self) -> None:
         self.query_one(Input).focus()
 
     async def on_input_submitted(self, event: Input.Submitted):
