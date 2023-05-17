@@ -1,5 +1,5 @@
 # Chat Term
-A TUI for optimized access to the ChatGPT API
+Fast access to ChatGPT from the terminal.
 
 # Installation
 Requires python 3.5+, `tmux`, and an `OPENAI_API_KEY`
