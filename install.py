@@ -9,7 +9,7 @@ print("This script will guide you through installation.\n")
 
 PROJECT_FOLDER = os.path.abspath(os.path.dirname(__file__))
 
-bash_func_str = """
+bash_func_str = f"""
 function chat() {{
     bash "{PROJECT_FOLDER}/run.sh" "$@"
 }}
@@ -23,28 +23,6 @@ def set_openai_key(key_string):
     with open("secrets.json", "w") as fp:
         json_data = {"OPENAI_API_KEY": key_string}
         json.dump(json_data, fp, sort_keys=True, indent=4)
-
-
-def _guess_shell_file():
-    """Guess the shell file used in the current shell (e.g. .bash_profile, .bashrc, .zshrc)"""
-    shell = os.path.realpath(f"/proc/{os.getppid()}/exe")
-
-    if "bash" in shell and os.path.exists(
-        os.path.join(os.path.expanduser("~"), ".bash_profile")
-    ):
-        return os.path.join(os.path.expanduser("~"), ".bash_profile")
-
-    if "bash" in shell and os.path.exists(
-        os.path.join(os.path.expanduser("~"), ".bashrc")
-    ):
-        return os.path.join(os.path.expanduser("~"), ".bashrc")
-
-    if "zsh" in shell and os.path.exists(
-        os.path.join(os.path.expanduser("~"), ".zshrc")
-    ):
-        return os.path.join(os.path.expanduser("~"), ".zshrc")
-    else:
-        return None
 
 
 def tmux_exists() -> bool:
@@ -77,19 +55,22 @@ def main():
         os.system("python3 -m pip install -r requirements.txt")
         print("requirements installed.")
 
-    if shell_file := _guess_shell_file():
-        resp = input(f"Add chat term to shell file {shell_file}? (y/n)")
-        if resp.lower() in ("yes", "y", ""):
-            with open(shell_file, "a") as shell_file:
-                shell_file.write(bash_func_str.format(PROJECT_FOLDER=PROJECT_FOLDER))
-                print(f"'function `chat` added to {str(shell_file)}.")
-    else:
-        input(
-            "unable to determine shell file. Add the following function to your e.g. .bashrc (press return to continue):"
-        )
-        print(bash_func_str.format(PROJECT_FOLDER=PROJECT_FOLDER))
 
-    print("installation complete.\n\nOpen a new session and type `chat`!")
+    while True:
+        shell_file = input("Provide a shell file that is sourced to add the `chat` function (e.g. ~/.bashrc, ~/.zshrc): ")
+        shell_file = os.path.expanduser(shell_file)
+        if os.path.exists(shell_file):
+            try:
+                with open(shell_file, "a") as shell_file:
+                    shell_file.write(bash_func_str)
+                    print(f"`chat` function added to {shell_file}.")
+                    break
+            except Exception as e:
+                print(f"error writing to {shell_file}: {e}")
+        else:
+            print("shell file doesn't exist; try again.")
+
+    print("installation complete.\n\nOpen a new shell session and type `chat`!")
 
 
 if __name__ == "__main__":
