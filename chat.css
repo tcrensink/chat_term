@@ -1,0 +1,25 @@
+Prompt {
+    dock: top;
+    layout: horizontal;
+    /* background: $boost; */
+    height: 3;
+    min-width: 50;
+    margin: 1;
+    /* border: none; */
+}
+
+Button {
+    width: 16;
+}
+
+#copy {
+    dock: right;
+    margin-left: 1;
+}
+
+#results {
+    width: 100%;
+    height: auto;
+    padding: 0;
+    margin-top: 1;
+}
