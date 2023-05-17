@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import sys
 from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Input, Markdown, Button, Footer, Header, Static
-from textual.containers import Horizontal, VerticalScroll
+from textual.widgets import Input, Markdown, Button, Footer, Static
+from textual.containers import VerticalScroll
 
 import os
 import json
@@ -49,15 +48,30 @@ class ChatApp(App):
     """llm chat."""
 
     CSS_PATH = "chat.css"
+    BINDINGS = [
+        ("shift+right", "copy_text()", "Copy response text"),
+        ("shift+up", "focus_input()", "focus input"),
+    ]
 
     def compose(self) -> ComposeResult:
         yield Prompt()
         with VerticalScroll(id="markdown"):
             yield MarkdownMem(id="results")
+        yield Footer()
 
     def on_mount(self) -> None:
         """Called when app starts."""
         # Give the input focus, so we can start typing straight away
+        self.query_one(Input).focus()
+
+    def action_copy_text(self) -> None:
+        markdown_mem = self.query_one("#results", Markdown)
+        try:
+            pyperclip.copy(markdown_mem._text)
+        except Exception as e:
+            print(e, "copy to clipboard failed")
+
+    def action_focus_input(self) -> None:
         self.query_one(Input).focus()
 
     async def on_input_submitted(self, event: Input.Submitted):
@@ -70,8 +84,7 @@ class ChatApp(App):
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         """A coroutine to handle a text changed prompt."""
-        markdown_mem = self.query_one("#results", Markdown)
-        pyperclip.copy(markdown_mem._text)
+        self.action_copy_text()
 
     @work(exclusive=True)
     async def issue_query(self, query_str: str) -> None:
