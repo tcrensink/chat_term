@@ -1,4 +1,4 @@
-# Chat Term
+# ChatTerm
 Fast terminal access to ChatGPT.
 
 # Installation
@@ -12,6 +12,6 @@ python install.py
 `install.py` adds a `chat` shell function, stores your api key in `secrets.json`.
 
 # Usage
-The `chat` command will connect to a tmux instance running `chat_term`; press `ctrl-c` to disconnect.
+Type `chat` to connect to the `chat_term` TUI (below). Because ChatTerm runs in the background, reconnection to the session is instantaneous.
 
 [Demo](https://user-images.githubusercontent.com/26497809/238851240-20f6f849-27f6-4e35-b6ef-e8ec761e63de.mov)
