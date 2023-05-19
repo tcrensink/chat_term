@@ -3,9 +3,6 @@ The fastest terminal access to ChatGPT.
 
 `ChatTerm` integrates a TUI with a tmux session, providing instantaneous access to a ChatGPT client. Type `chat` to resume a session, copy the response to your clipboard at a keystroke; its a frictionless integration into your daily (terminal-based) workflow.
 
-# Support
-Currently targets macos (iTerm optimized) and linux.
-
 # Installation
 Requires python 3.5+, `tmux`, and an `OPENAI_API_KEY`
 
