@@ -10,8 +10,27 @@ import openai
 import pyperclip
 
 
+# stores chat history until reset.
+SESSION_CONTEXT = {
+    "role": "system",
+    "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible. If you are not sure, just say 'I don't know'.",
+}
+
+
+try:
+    BASE_PATH = os.path.dirname(__file__)
+except NameError:
+    BASE_PATH = os.getcwd()
+
+with open(os.path.join(BASE_PATH, "config.jsonc")) as fp:
+    lines = fp.readlines()
+    json_str = "".join(
+        [line for line in lines if not line.lstrip().startswith("//")])
+    CONFIG = json.loads(json_str)
+
+
 def set_key():
-    secrets_file = os.path.join(os.path.dirname(__file__), "secrets.json")
+    secrets_file = os.path.join(BASE_PATH, "secrets.json")
     with open(secrets_file) as fp:
         secrets = json.load(fp)
         OPENAI_API_KEY = secrets.get("OPENAI_API_KEY")
@@ -48,10 +67,8 @@ class ChatApp(App):
     """llm chat."""
 
     CSS_PATH = "chat.css"
-    BINDINGS = [
-        ("shift+right", "copy_text()", "Copy response text"),
-        ("shift+up", "focus_input()", "focus input"),
-    ]
+    BINDINGS = [tuple(k) for k in CONFIG["keybindings"]]
+    chat_history = [SESSION_CONTEXT]
 
     def compose(self) -> ComposeResult:
         yield Prompt()
@@ -74,13 +91,20 @@ class ChatApp(App):
     def action_focus_input(self) -> None:
         self.query_one(Input).focus()
 
+    def action_reset_chat_history(self) -> None:
+        self.chat_history = [SESSION_CONTEXT]
+        markdown_mem = self.query_one("#results", Markdown)
+        markdown_mem.clear_text()
+        markdown_mem.append_text("(restarted chat session)")
+
     async def on_input_submitted(self, event: Input.Submitted):
         if event.input.id == "input":
             query_str = self.query_one("#input", Input).value
             if query_str:
                 self.issue_query(query_str)
             else:
-                self.query_one("#results", Markdown).update("(prompt is empty)")
+                self.query_one("#results", Markdown).update(
+                    "(prompt is empty)")
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         """A coroutine to handle a text changed prompt."""
@@ -89,25 +113,26 @@ class ChatApp(App):
     @work(exclusive=True)
     async def issue_query(self, query_str: str) -> None:
         """Query chat gpt."""
+        self.chat_history.append(
+            {"role": "user", "content": query_str}
+        )
         markdown_mem = self.query_one("#results", Markdown)
         markdown_mem.clear_text()
+
+        current_response = ""
         async for chunk in await openai.ChatCompletion.acreate(
             model="gpt-3.5-turbo",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible. If you are not sure, just say 'I don't know'.",
-                },
-                {
-                    "role": "user",
-                    "content": query_str,
-                },
-            ],
+            messages=self.chat_history,
             stream=True,
         ):
             content = chunk["choices"][0].get("delta", {}).get("content")
             if content is not None:
+                current_response += content
                 markdown_mem.append_text(content)
+
+        if current_response is not None:
+            self.chat_history.append(
+                {"role": "assistant", "content": str(current_response)})
 
     def make_word_markdown(self, results: object) -> str:
         """Convert the results in to markdown."""
