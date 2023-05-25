@@ -5,7 +5,7 @@ Prompt {
     height: 3;
     min-width: 50;
     margin: 1;
-    /* border: none; */
+    /* border: blank; */
 }
 
 Button {

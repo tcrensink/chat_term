@@ -95,7 +95,7 @@ class ChatApp(App):
         self.chat_history = [SESSION_CONTEXT]
         markdown_mem = self.query_one("#results", Markdown)
         markdown_mem.clear_text()
-        markdown_mem.append_text("(restarted chat session)")
+        markdown_mem.append_text("(chat session cleared)")
 
     async def on_input_submitted(self, event: Input.Submitted):
         if event.input.id == "input":

@@ -3,17 +3,17 @@
     // keybindings are bound to e.g. `action_copy_text(self)`
     "keybindings": [
         [
-            "shift+right",
+            "ctrl+right",
             "copy_text()",
             "Copy response text"
         ],
         [
-            "shift+up",
+            "ctrl+up",
             "focus_input()",
             "focus input"
         ],
         [
-            "ctrl+x",
+            "ctrl+r",
             "reset_chat_history()",
             "Clear chat session"
         ]
