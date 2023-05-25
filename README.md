@@ -13,7 +13,7 @@ python install.py
 ```
 
 # Usage
-After install (and a new shell session) type `chat` to connect to the TUI. Reconnecting to a session is instantaneous.
+Type `chat` after installation and a new terminal session. This instantly connects to an existing `chat_term` session (or creates a new one as needed).
 
 Terminal Commands:
 ```bash
