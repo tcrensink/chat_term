@@ -1,0 +1,21 @@
+{
+    // https://textual.textualize.io/guide/input/#bindings or `$ textual keys`
+    // keybindings are bound to e.g. `action_copy_text(self)`
+    "keybindings": [
+        [
+            "shift+right",
+            "copy_text()",
+            "Copy response text"
+        ],
+        [
+            "shift+up",
+            "focus_input()",
+            "focus input"
+        ],
+        [
+            "ctrl+x",
+            "reset_chat_history()",
+            "Clear chat session"
+        ]
+    ]
+}
