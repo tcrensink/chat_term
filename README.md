@@ -17,8 +17,8 @@ After install (and a new shell session) type `chat` to connect to the TUI. Recon
 
 Terminal Commands:
 ```bash
-chat # starts or connects to chat_term session
-chat restart # restarts chat_term session in case of error
+chat # reconnect to existing or start new chat_term session
+chat restart # force restarts chat_term session (when source is changed or error occurs)
 chat stop # kills tmux chat_term session
 chat --help # displays commands as described above
 ```
