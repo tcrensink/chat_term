@@ -3,12 +3,18 @@
     // keybindings are bound to e.g. `action_copy_text(self)`
     "keybindings": [
         [
-            "ctrl+right",
+            // "quit" binding should match tmux.conf
+            "ctrl+x",
+            "quit",
+            "Quit"
+        ],
+        [
+            "ctrl+c",
             "copy_text()",
             "Copy response text"
         ],
         [
-            "ctrl+up",
+            "shift+up",
             "focus_input()",
             "focus input"
         ],
