@@ -14,7 +14,7 @@
             "Copy response text"
         ],
         [
-            "shift+up",
+            "ctrl+up",
             "focus_input()",
             "focus input"
         ],
