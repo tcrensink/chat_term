@@ -1,25 +1,25 @@
 Prompt {
     dock: top;
     layout: horizontal;
-    /* background: $boost; */
     height: 3;
     min-width: 50;
     margin: 1;
-    /* border: none; */
+    /* background: $boost; */
+    /* border: blank; */
 }
 
 Button {
     width: 16;
 }
 
-#copy {
-    dock: right;
-    margin-left: 1;
+InputText {
+    width: 100%;
+    margin: 0 25 0 0;
+    background: rgb(128, 111, 0) 10%;
 }
 
-#results {
+ResponseText {
     width: 100%;
-    height: auto;
-    padding: 0;
-    margin-top: 1;
+    margin: 0 0 1 25;
+    background: rgba(109, 11, 11, 0.79) 10%;
 }
