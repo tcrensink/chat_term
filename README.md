@@ -16,7 +16,7 @@ python install.py
 # Usage
 Terminal Commands:
 ```bash
-chat # start or reconnect to chat_term session
+chat # reattach to chat_term session (create new as needed)
 chat restart # force restart chat_term session (when source is changed or error occurs)
 chat stop # kills tmux chat_term session
 chat --help # displays commands as described above
