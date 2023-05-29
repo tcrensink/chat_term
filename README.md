@@ -22,7 +22,7 @@ chat stop # kills tmux chat_term session
 chat --help # displays commands as described above
 ```
 
-Keybindings are listed in the TUI footer, and editable in `config.jsonc`. Try `textual keys` for available bindings. Current implemented:
+Keybindings are listed in the TUI footer, and editable in `config.jsonc`:
 - `ctrl-x` detach from chat_term
 - `ctrl-c` copy chat history
 - `ctrl-r` reset chat session
