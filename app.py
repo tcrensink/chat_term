@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Input, Button, Footer, Static, Label
+from textual.widgets import Input, Footer, Static, Label
 from textual.containers import VerticalScroll
 
 import os
@@ -40,11 +40,10 @@ def set_key():
 
 
 class Prompt(Static):
-    """Prompt input + submit button."""
+    """Input widget for chat."""
 
     def compose(self) -> ComposeResult:
-        yield Input(id="input", placeholder="return to submit query; ctrl-c to detach")
-        yield Button("copy text", id="copy")
+        yield Input(id="input", placeholder="Send a message...")
 
 
 class InputText(Static):
@@ -104,7 +103,7 @@ class ChatApp(App):
         input_widget.focus()
 
     def action_add_query(self, query_str) -> None:
-        """Add next prompt section."""
+        """Add next query section."""
         self.chat_history.append(
             {"role": "user", "content": query_str}
         )
@@ -115,7 +114,7 @@ class ChatApp(App):
         return query_text
 
     def action_add_response(self) -> None:
-        """Add next response."""
+        """Add next response section."""
         response_text = ResponseText()
         self.query_one("#content_window").mount(response_text)
         response_text.scroll_visible()
@@ -128,10 +127,6 @@ class ChatApp(App):
                 self.issue_query(query_str)
             else:
                 pass
-
-    async def on_button_pressed(self, event: Button.Pressed) -> None:
-        """A coroutine to handle a text changed prompt."""
-        self.action_copy_text()
 
     @work(exclusive=True)
     async def issue_query(self, query_str: str) -> None:
