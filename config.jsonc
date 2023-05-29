@@ -20,7 +20,7 @@
         ],
         [
             "ctrl+r",
-            "reset_chat_history()",
+            "reset_chat_session()",
             "Clear chat session"
         ]
     ]

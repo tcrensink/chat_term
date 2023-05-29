@@ -91,11 +91,13 @@ class ChatApp(App):
     def action_focus_input(self) -> None:
         self.query_one(Input).focus()
 
-    def action_reset_chat_history(self) -> None:
+    def action_reset_chat_session(self) -> None:
         self.chat_history = [SESSION_CONTEXT]
         markdown_mem = self.query_one("#results", Markdown)
         markdown_mem.clear_text()
         markdown_mem.append_text("(chat session cleared)")
+        input_widget = self.query_one("#input", Input)
+        input_widget.value = ""
 
     async def on_input_submitted(self, event: Input.Submitted):
         if event.input.id == "input":
