@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Input, Markdown, Button, Footer, Static
+from textual.widgets import Input, Button, Footer, Static, Label
 from textual.containers import VerticalScroll
 
 import os
@@ -47,8 +47,12 @@ class Prompt(Static):
         yield Button("copy text", id="copy")
 
 
-class MarkdownMem(Markdown):
-    """Markdown widget that stores text content."""
+class InputText(Static):
+    """Formatted widget that contains prompt text."""
+
+
+class ResponseText(Static):
+    """Formatted widget that contains response text."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -72,8 +76,8 @@ class ChatApp(App):
 
     def compose(self) -> ComposeResult:
         yield Prompt()
-        with VerticalScroll(id="markdown"):
-            yield MarkdownMem(id="results")
+        with VerticalScroll(id="content_window"):
+            yield InputText(id="results")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -82,9 +86,8 @@ class ChatApp(App):
         self.query_one(Input).focus()
 
     def action_copy_text(self) -> None:
-        markdown_mem = self.query_one("#results", Markdown)
         try:
-            pyperclip.copy(markdown_mem._text)
+            pyperclip.copy(str(self.chat_history))
         except Exception as e:
             print(e, "copy to clipboard failed")
 
@@ -93,11 +96,30 @@ class ChatApp(App):
 
     def action_reset_chat_session(self) -> None:
         self.chat_history = [SESSION_CONTEXT]
-        markdown_mem = self.query_one("#results", Markdown)
-        markdown_mem.clear_text()
-        markdown_mem.append_text("(chat session cleared)")
+        window = self.query_one("#content_window")
+        window.query("InputText").remove()
+        window.query("ResponseText").remove()
         input_widget = self.query_one("#input", Input)
         input_widget.value = ""
+        input_widget.focus()
+
+    def action_add_query(self, query_str) -> None:
+        """Add next prompt section."""
+        self.chat_history.append(
+            {"role": "user", "content": query_str}
+        )
+        self.query_one("#input", Input).value = ""
+        query_text = InputText(query_str)
+        self.query_one("#content_window").mount(query_text)
+        query_text.scroll_visible()
+        return query_text
+
+    def action_add_response(self) -> None:
+        """Add next response."""
+        response_text = ResponseText()
+        self.query_one("#content_window").mount(response_text)
+        response_text.scroll_visible()
+        return response_text
 
     async def on_input_submitted(self, event: Input.Submitted):
         if event.input.id == "input":
@@ -105,8 +127,7 @@ class ChatApp(App):
             if query_str:
                 self.issue_query(query_str)
             else:
-                self.query_one("#results", Markdown).update(
-                    "(prompt is empty)")
+                pass
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         """A coroutine to handle a text changed prompt."""
@@ -115,12 +136,8 @@ class ChatApp(App):
     @work(exclusive=True)
     async def issue_query(self, query_str: str) -> None:
         """Query chat gpt."""
-        self.chat_history.append(
-            {"role": "user", "content": query_str}
-        )
-        markdown_mem = self.query_one("#results", Markdown)
-        markdown_mem.clear_text()
-
+        self.action_add_query(query_str=query_str)
+        response_text = self.action_add_response()
         current_response = ""
         async for chunk in await openai.ChatCompletion.acreate(
             model="gpt-3.5-turbo",
@@ -130,15 +147,11 @@ class ChatApp(App):
             content = chunk["choices"][0].get("delta", {}).get("content")
             if content is not None:
                 current_response += content
-                markdown_mem.append_text(content)
+                response_text.append_text(content)
 
         if current_response is not None:
             self.chat_history.append(
                 {"role": "assistant", "content": str(current_response)})
-
-    def make_word_markdown(self, results: object) -> str:
-        """Convert the results in to markdown."""
-        return results
 
 
 if __name__ == "__main__":
