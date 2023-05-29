@@ -4,22 +4,22 @@ Prompt {
     height: 3;
     min-width: 50;
     margin: 1;
-    /* background: $boost; */
-    /* border: blank; */
+    border: none;
 }
 
-Button {
-    width: 16;
+Input {
+    color: rgb(222, 204, 105);
+    border: blank;
 }
 
 InputText {
     width: 100%;
     margin: 0 25 0 0;
-    background: rgb(128, 111, 0) 10%;
+    color: rgb(222, 204, 105);
 }
 
 ResponseText {
     width: 100%;
     margin: 0 0 1 25;
-    background: rgba(109, 11, 11, 0.79) 10%;
+    color: rgb(226, 137, 86);
 }

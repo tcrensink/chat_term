@@ -14,9 +14,8 @@ if [ $# -eq 0 ]; then
     else
     # if session does not exist, create it
         echo "starting chat_term session..."
-        tmux -f "$PROJECT_FOLDER/tmux.conf" new-session -E -d -s chat_term
+        tmux -f "$PROJECT_FOLDER/tmux.conf" new-session -d -s chat_term
         tmux send-keys -t chat_term "$TMUX_COMMAND" C-m
-        sleep 2
         tmux attach-session -t chat_term
     fi
     exit 0
