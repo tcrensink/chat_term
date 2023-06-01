@@ -4,7 +4,7 @@ The fastest access to ChatGPT.
 ChatTerm is a terminal-based TUI that provides instantaneous access to ChatGPT. Type `chat` to start or resume a terminal session.
 
 # Installation
-Requires python 3.5+, tmux, and an OPENAI_API_KEY
+Requires python 3.5+, tmux, and an openai api key.
 
 ```bash
 git clone https://github.com/tcrensink/chat_term.git
