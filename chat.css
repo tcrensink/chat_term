@@ -1,12 +1,3 @@
-Prompt {
-    dock: top;
-    layout: horizontal;
-    height: 3;
-    min-width: 50;
-    margin: 1;
-    border: none;
-}
-
 Input {
     color: rgb(222, 204, 105);
     border: blank;
@@ -21,5 +12,29 @@ InputText {
 ResponseText {
     width: 100%;
     margin: 0 0 1 25;
-    color: rgb(226, 137, 86);
+    color: rgb(226, 112, 86);
+}
+
+Footer {
+    background: black;
+    color: rgb(222, 204, 105);
+    dock: bottom;
+    height: 1;
+}
+
+Footer>.footer--key {
+    text-style: bold;
+    background: rgb(76, 0, 0);
+    color: rgb(222, 204, 105);
+}
+
+Footer>.footer--highlight {
+    background: rgb(118, 1, 1);
+    color: rgb(222, 204, 105);
+}
+
+Footer>.footer--highlight-key {
+    background: rgb(118, 1, 1);
+    text-style: bold;
+    color: rgb(222, 204, 105);
 }

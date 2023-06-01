@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-from textual import work
-from textual.app import App, ComposeResult
-from textual.widgets import Input, Footer, Static, Label
-from textual.containers import VerticalScroll
-
 import os
 import json
 import openai
 import pyperclip
+from textual import work
+from textual.app import App, ComposeResult
+from textual.widgets import Input, Footer, Static, Label
+from textual.containers import VerticalScroll
 
 
 # stores chat history until reset.
@@ -39,13 +38,6 @@ def set_key():
         openai.api_key = OPENAI_API_KEY
 
 
-class Prompt(Static):
-    """Input widget for chat."""
-
-    def compose(self) -> ComposeResult:
-        yield Input(id="input", placeholder="Send a message...")
-
-
 class InputText(Static):
     """Formatted widget that contains prompt text."""
 
@@ -67,16 +59,16 @@ class ResponseText(Static):
 
 
 class ChatApp(App):
-    """llm chat."""
+    """chat TUI"""
 
     CSS_PATH = "chat.css"
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]]
     chat_history = [SESSION_CONTEXT]
 
     def compose(self) -> ComposeResult:
-        yield Prompt()
         with VerticalScroll(id="content_window"):
             yield InputText(id="results")
+        yield Input(id="input", placeholder="Send a message...")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -107,9 +99,10 @@ class ChatApp(App):
         self.chat_history.append(
             {"role": "user", "content": query_str}
         )
-        self.query_one("#input", Input).value = ""
+        input_widget = self.query_one("#input", Input).value = ""
         query_text = InputText(query_str)
-        self.query_one("#content_window").mount(query_text)
+        content_window = self.query_one("#content_window", VerticalScroll)
+        content_window.mount(query_text)
         query_text.scroll_visible()
         return query_text
 
