@@ -11,10 +11,10 @@
         [
             "ctrl+c",
             "copy_text()",
-            "Copy response text"
+            "Copy chat"
         ],
         [
-            "ctrl+up",
+            "ctrl+l",
             "focus_input()",
             "focus input"
         ],
