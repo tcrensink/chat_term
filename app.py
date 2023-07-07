@@ -128,7 +128,7 @@ class ChatApp(App):
         response_text = self.action_add_response()
         current_response = ""
         async for chunk in await openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             messages=self.chat_history,
             stream=True,
         ):
