@@ -3,25 +3,25 @@
     // keybindings are bound to e.g. `action_copy_text(self)`
     "keybindings": [
         [
+            "ctrl+p",
+            "submit()",
+            "submit"
+        ],
+        [
             // "quit" binding should match tmux.conf
             "ctrl+x",
             "quit",
             "Quit"
         ],
         [
-            "ctrl+c",
-            "copy_text()",
-            "Copy chat"
+            "ctrl+r",
+            "reset_chat_session()",
+            "Clear chat session"
         ],
         [
             "ctrl+l",
             "focus_input()",
             "focus input"
-        ],
-        [
-            "ctrl+r",
-            "reset_chat_session()",
-            "Clear chat session"
         ]
     ]
 }

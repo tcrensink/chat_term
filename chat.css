@@ -1,6 +1,10 @@
-Input {
+TextArea {
     color: rgb(222, 204, 105);
     border: blank;
+    width: 100%;
+    min-height: 3;
+    max-height: 25vh;
+    height: 15vh;
 }
 
 InputText {
@@ -13,6 +17,7 @@ ResponseText {
     width: 100%;
     margin: 0 0 1 25;
     color: rgb(226, 112, 86);
+    background: $panel;
 }
 
 Footer {
