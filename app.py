@@ -9,6 +9,7 @@ from textual.app import App, ComposeResult
 from textual.widgets import Footer, Static, Label, TextArea
 from textual.containers import VerticalScroll
 from textual import events
+from textual.reactive import var
 
 # stores chat history until reset.
 SESSION_CONTEXT = {
@@ -51,13 +52,6 @@ def set_key():
 class InputText(Static):
     """Formatted widget that contains prompt text."""
 
-    def on_click(self) -> None:
-        copied = copy_to_clipboard(self._text)
-        if copied:
-            self.styles.opacity = 0.0
-            self.styles.animate(attribute="opacity", value=1.0,
-                                duration=0.3, easing="out_expo")
-
 
 class ResponseText(Static):
     """Formatted widget that contains response text."""
@@ -93,6 +87,16 @@ class ChatApp(App):
     CSS_PATH = "chat.css"
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]]
     chat_history = [SESSION_CONTEXT]
+
+    expanded_input = var(False)
+
+    def watch_expanded_input(self, expanded_input: bool) -> None:
+        """Called when expanded_input is modified."""
+        self.set_class(expanded_input, "-expanded-input")
+
+    def action_toggle_input(self) -> None:
+        """Toggle expanded input."""
+        self.expanded_input = not self.expanded_input
 
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="content_window"):
@@ -146,7 +150,7 @@ class ChatApp(App):
         else:
             pass
 
-    @ work(exclusive=True)
+    @work(exclusive=True)
     async def issue_query(self, query_str: str) -> None:
         """Query chat gpt."""
         self.action_add_query(query_str=query_str)

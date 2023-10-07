@@ -22,6 +22,11 @@
             "ctrl+l",
             "focus_input()",
             "focus input"
+        ],
+        [
+            "ctrl+e",
+            "toggle_input",
+            "toggle input"
         ]
     ]
 }
