@@ -3,6 +3,7 @@
     border: blank;
     width: 100%;
     height: 15vh;
+    min-height: 1;
 }
 
 InputText {
