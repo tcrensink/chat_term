@@ -1,9 +1,7 @@
-TextArea {
+#input {
     color: rgb(222, 204, 105);
     border: blank;
     width: 100%;
-    min-height: 3;
-    max-height: 25vh;
     height: 15vh;
 }
 
@@ -17,7 +15,7 @@ ResponseText {
     width: 100%;
     margin: 0 0 1 25;
     color: rgb(226, 112, 86);
-    background: $panel;
+    background: $panel-darken-1;
 }
 
 Footer {
@@ -42,4 +40,9 @@ Footer>.footer--highlight-key {
     background: rgb(118, 1, 1);
     text-style: bold;
     color: rgb(222, 204, 105);
+}
+
+ChatApp.-expanded-input #input {
+    display: block;
+    height: 70%;
 }
