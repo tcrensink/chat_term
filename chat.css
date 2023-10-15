@@ -6,6 +6,11 @@
     min-height: 1;
 }
 
+ChatApp.-expanded-input #input {
+    display: block;
+    height: 72%;
+}
+
 InputText {
     width: 100%;
     margin: 0 25 0 0;
@@ -41,9 +46,4 @@ Footer>.footer--highlight-key {
     background: rgb(118, 1, 1);
     text-style: bold;
     color: rgb(222, 204, 105);
-}
-
-ChatApp.-expanded-input #input {
-    display: block;
-    height: 70%;
 }

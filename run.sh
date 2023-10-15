@@ -4,7 +4,7 @@
 PROJECT_FOLDER="$(dirname "$0")"
 
 # update as needed
-TMUX_COMMAND="python3 $PROJECT_FOLDER/app.py"
+TMUX_COMMAND="python $PROJECT_FOLDER/app.py"
 
 # # handle starting/attaching to chat_term session (no arguments)
 if [ $# -eq 0 ]; then

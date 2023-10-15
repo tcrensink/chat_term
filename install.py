@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 
 import json
 import os
@@ -52,7 +52,7 @@ def main():
 
     resp = input("Install requirements? (y/n): ")
     if resp.lower() in ("yes", "y", ""):
-        os.system("python3 -m pip install -r requirements.txt")
+        os.system("python -m pip install -r requirements.txt")
         print("requirements installed.")
 
 
