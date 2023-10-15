@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import os
 import json
 import openai
@@ -51,6 +51,7 @@ def set_key():
 
 class InputText(Static):
     """Formatted widget that contains prompt text."""
+    pass
 
 
 class ResponseText(Static):
