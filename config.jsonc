@@ -8,15 +8,14 @@
             "submit"
         ],
         [
-            // "quit" binding should match tmux.conf
-            "ctrl+x",
-            "quit",
-            "Quit"
+            "ctrl+o",
+            "toggle_input",
+            "expand input window"
         ],
         [
             "ctrl+r",
             "reset_chat_session()",
-            "Clear chat session"
+            "reset session"
         ],
         [
             "ctrl+l",
@@ -24,9 +23,10 @@
             "focus input"
         ],
         [
-            "ctrl+e",
-            "toggle_input",
-            "toggle input"
+            // "quit" binding should match tmux.conf
+            "ctrl+x",
+            "quit",
+            "detach"
         ]
     ]
 }
