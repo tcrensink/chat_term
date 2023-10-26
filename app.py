@@ -80,6 +80,7 @@ class ResponseText(Static):
 
 class MyTextArea(TextArea):
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]]
+    show_line_numbers = CONFIG["show_line_numbers"]
 
 
 class ChatApp(App):
