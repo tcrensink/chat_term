@@ -2,12 +2,10 @@
     color: rgb(222, 204, 105);
     border: blank;
     width: 100%;
-    height: 15vh;
-    min-height: 1;
+    height: 5;
 }
 
 ChatApp.-expanded-input #input {
-    display: block;
     height: 72%;
 }
 
