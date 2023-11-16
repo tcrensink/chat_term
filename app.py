@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import json
-import openai
+from openai import AsyncOpenAI
 import pyperclip
 from textual.binding import Binding
 from textual import work
@@ -39,15 +39,15 @@ def copy_to_clipboard(text):
     return True
 
 
-def set_key():
+def get_key():
+    """Return the open ai api key."""
     secrets_file = os.path.join(BASE_PATH, "secrets.json")
     with open(secrets_file) as fp:
         secrets = json.load(fp)
-        OPENAI_API_KEY = secrets.get("OPENAI_API_KEY")
-        if not OPENAI_API_KEY:
-            raise Exception("OPENAI_API_KEY in secrets.json is required")
-        openai.api_key = OPENAI_API_KEY
-
+        openai_api_key = secrets.get("OPENAI_API_KEY")
+        if not openai_api_key:
+            raise Exception("you must provide your OPENAI_API_KEY in secrets.json")
+    return openai_api_key
 
 class InputText(Static):
     """Formatted widget that contains prompt text."""
@@ -158,12 +158,14 @@ class ChatApp(App):
         self.action_add_query(query_str=query_str)
         response_text = self.action_add_response()
         current_response = ""
-        async for chunk in await openai.ChatCompletion.acreate(
-            model="gpt-4",
+        client = AsyncOpenAI(api_key=get_key())
+        stream = await client.chat.completions.create(
             messages=self.chat_history,
+            model=CONFIG["model"],
             stream=True,
-        ):
-            content = chunk["choices"][0].get("delta", {}).get("content")
+        )
+        async for part in stream:
+            content = part.choices[0].delta.content or ""
             if content is not None:
                 current_response += content
                 response_text.append_text(content)
@@ -175,6 +177,5 @@ class ChatApp(App):
 
 if __name__ == "__main__":
 
-    set_key()
     app = ChatApp()
     app.run()
