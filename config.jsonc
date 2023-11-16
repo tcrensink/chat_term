@@ -1,4 +1,5 @@
 {
+    "model": "gpt-4",
     "show_line_numbers": false,
     // https://textual.textualize.io/guide/input/#bindings or `$ textual keys`
     // keybindings are bound to e.g. `action_copy_text(self)`
