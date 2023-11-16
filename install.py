@@ -5,9 +5,6 @@ import os
 import subprocess
 import shutil
 
-# This file asks user successive prompts; based on the result will update various code bits
-print("This script will guide you through installation.\n")
-
 
 PROJECT_FOLDER = os.path.abspath(os.path.dirname(__file__))
 
