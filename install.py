@@ -3,7 +3,7 @@
 import json
 import os
 import subprocess
-import sys
+import shutil
 
 # This file asks user successive prompts; based on the result will update various code bits
 print("This script will guide you through installation.\n")
@@ -31,19 +31,19 @@ def check_base_reqs() -> bool:
     """Check if tmux, poetry are installed (required for installation)."""
 
     return_val = True
-    poetry_return_code = subprocess.run(
-        ["poetry", "--version"], capture_output=True, text=True
-    ).returncode
-    if poetry_return_code != 0:
-        print("install poetry and rerun.")
+    msg = ""
+    if shutil.which("poetry") is None:
+        msg += "Poetry not found; install Poetry before continuing: https://python-poetry.org/docs/#installation.\n"
+        return_val = False
+    if shutil.which("tmux") is None:
+        msg += "tmux not found; install tmux before continuing.\n"
         return_val = False
 
-    tmux_return_code = subprocess.run(
-        ["tmux -V"], capture_output=True, text=True
-    ).returncode
-    if tmux_return_code != 0:
-        print("install tmux and rerun.")
-        return_val = False
+    if return_val is False:
+        msg += "Installation failed."
+    else:
+        msg += "Base requirements satisfied."
+    print(msg)
     return return_val
 
 
@@ -54,7 +54,7 @@ def install_reqs():
 
 
 def main():
-    print("This script will guide you through installation.")
+    print("This script will guide you through installation.\n")
     if not check_base_reqs():
         return
 
