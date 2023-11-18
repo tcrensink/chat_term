@@ -24,8 +24,7 @@ except NameError:
 
 with open(os.path.join(BASE_PATH, "config.jsonc")) as fp:
     lines = fp.readlines()
-    json_str = "".join(
-        [line for line in lines if not line.lstrip().startswith("//")])
+    json_str = "".join([line for line in lines if not line.lstrip().startswith("//")])
     CONFIG = json.loads(json_str)
 
 
@@ -49,8 +48,10 @@ def get_key():
             raise Exception("you must provide your OPENAI_API_KEY in secrets.json")
     return openai_api_key
 
+
 class InputText(Static):
     """Formatted widget that contains prompt text."""
+
     pass
 
 
@@ -66,8 +67,9 @@ class ResponseText(Static):
         copied = copy_to_clipboard(self._text)
         if copied:
             self.styles.opacity = 0.0
-            self.styles.animate(attribute="opacity", value=1.0,
-                                duration=0.3, easing="out_expo")
+            self.styles.animate(
+                attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
+            )
 
     def append_text(self, new_text):
         self._text += new_text
@@ -79,15 +81,19 @@ class ResponseText(Static):
 
 
 class MyTextArea(TextArea):
-    BINDINGS = [tuple(k) for k in CONFIG["keybindings"]]
-    show_line_numbers = CONFIG["show_line_numbers"]
+    BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
+        Binding("ctrl+c", "", "", show=False)
+    ]
 
 
 class ChatApp(App):
     """chat TUI"""
 
     CSS_PATH = "chat.css"
-    BINDINGS = [tuple(k) for k in CONFIG["keybindings"]]
+    BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
+        Binding("ctrl+c", "", "", show=False)
+    ]
+
     chat_history = [SESSION_CONTEXT]
 
     expanded_input = var(False)
@@ -125,9 +131,7 @@ class ChatApp(App):
 
     def action_add_query(self, query_str) -> None:
         """Add next query section."""
-        self.chat_history.append(
-            {"role": "user", "content": query_str}
-        )
+        self.chat_history.append({"role": "user", "content": query_str})
         input_widget = self.query_one("#input", MyTextArea).load_text("")
         query_text = InputText(query_str)
         content_window = self.query_one("#content_window", VerticalScroll)
@@ -172,10 +176,10 @@ class ChatApp(App):
 
         if current_response is not None:
             self.chat_history.append(
-                {"role": "assistant", "content": str(current_response)})
+                {"role": "assistant", "content": str(current_response)}
+            )
 
 
 if __name__ == "__main__":
-
     app = ChatApp()
     app.run()
