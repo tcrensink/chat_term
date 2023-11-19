@@ -84,6 +84,7 @@ class MyTextArea(TextArea):
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
         Binding("ctrl+c", "", "", show=False)
     ]
+    show_line_numbers = CONFIG["show_line_numbers"]
 
 
 class ChatApp(App):
