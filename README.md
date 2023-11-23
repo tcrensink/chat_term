@@ -14,9 +14,9 @@ python install.py
 # Usage
 Terminal Commands:
 ```bash
-chat # create or resume existing chat_term session
-chat restart # restarts chat session entirely
-chat stop # kills chat_term session
+chat # resume/create chat_term session
+chat restart # restart new chat_term session
+chat stop # kill chat_term session
 chat --help # displays commands as described above
 ```
 
