@@ -2,17 +2,22 @@
 Fast terminal access to ChatGPT. Type `chat` in the terminal to instantly access a chat TUI.
 
 # Installation
-Requires python 3.9+, tmux, poetry, and an openai api key.
+
+Requirements:
+- python 3.9+
+- tmux
+- poetry
+- openai api key
+
 
 ```bash
 git clone https://github.com/tcrensink/chat_term.git
 cd chat_term
 python install.py
-# open new shell session
+# open new shell session to use
 ```
 
 # Usage
-Terminal Commands:
 ```bash
 chat # resume/create chat_term session
 chat restart # restart new chat_term session
