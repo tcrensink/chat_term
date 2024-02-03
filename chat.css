@@ -1,5 +1,6 @@
 #input {
-    color: #839496;
+    /* color: #839496; */
+    color: #b2ad1d;
     border: blank;
     width: 100%;
     height: 5;
@@ -28,8 +29,8 @@ ResponseText {
 
 Footer>.footer--key {
     text-style: bold;
-    color: #17623e;
     background: #070e10;
+    color: #17623e;
 }
 
 Footer {
@@ -40,8 +41,8 @@ Footer {
 }
 
 Footer>.footer--highlight-key {
-    background: #102022;
     text-style: bold;
+    background: #102022;
     color: #22915b;
 }
 
