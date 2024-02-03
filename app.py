@@ -110,7 +110,7 @@ class ChatApp(App):
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="content_window"):
             yield InputText(id="results")
-        yield MyTextArea(id="input")
+        yield MyTextArea(id="input", soft_wrap=True)
         yield Footer()
 
     def on_mount(self) -> None:
