@@ -1,9 +1,9 @@
 #input {
-    color: rgb(220, 200, 88);
+    color: #839496;
     border: blank;
     width: 100%;
     height: 5;
-    background: rgb(0, 27, 34);
+    background: #182d32;
 }
 
 ChatApp.-expanded-input #input {
@@ -11,42 +11,41 @@ ChatApp.-expanded-input #input {
 }
 
 #content_window {
-    background: rgb(29, 36, 38);
+    background: #0b1618;
 }
 
 InputText {
     width: 100%;
     margin: 0 25 0 0;
-    color: rgb(220, 200, 88);
+    color: #918d23;
 }
 
 ResponseText {
     width: 100%;
     margin: 0 0 1 25;
-    color: rgb(183, 68, 43);
-    background: rgb(22, 35, 38);
-}
-
-Footer {
-    background: black;
-    color: rgb(222, 204, 105);
-    dock: bottom;
-    height: 1;
+    color: #9e3621;
 }
 
 Footer>.footer--key {
     text-style: bold;
-    background: rgb(76, 0, 0);
-    color: rgb(222, 204, 105);
+    color: #17623e;
+    background: #070e10;
 }
 
-Footer>.footer--highlight {
-    background: rgb(118, 1, 1);
-    color: rgb(222, 204, 105);
+Footer {
+    dock: bottom;
+    height: 1;
+    background: #0b1618;
+    color: #17623e;
 }
 
 Footer>.footer--highlight-key {
-    background: rgb(118, 1, 1);
+    background: #102022;
     text-style: bold;
-    color: rgb(222, 204, 105);
+    color: #22915b;
+}
+
+Footer>.footer--highlight {
+    background: #183035;
+    color: #22915b;
 }

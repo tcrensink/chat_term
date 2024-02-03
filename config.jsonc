@@ -12,7 +12,7 @@
         [
             "ctrl+o",
             "toggle_input",
-            "expand input window"
+            "expand text area"
         ],
         [
             "ctrl+r",
