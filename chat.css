@@ -1,6 +1,5 @@
 #input {
-    /* color: #839496; */
-    color: #b2ad1d;
+    color: #c2bd20;
     border: blank;
     width: 100%;
     height: 5;
@@ -18,35 +17,35 @@ ChatApp.-expanded-input #input {
 InputText {
     width: 100%;
     margin: 0 25 0 0;
-    color: #918d23;
+    color: #c2bd20;
 }
 
 ResponseText {
     width: 100%;
     margin: 0 0 1 25;
-    color: #9e3621;
+    color: #b85616;
 }
 
 Footer>.footer--key {
     text-style: bold;
     background: #070e10;
-    color: #17623e;
+    color: #1c7148;
 }
 
 Footer {
     dock: bottom;
     height: 1;
     background: #0b1618;
-    color: #17623e;
+    color: #1c7148;
 }
 
 Footer>.footer--highlight-key {
     text-style: bold;
     background: #102022;
-    color: #22915b;
+    color: #1ea564;
 }
 
 Footer>.footer--highlight {
     background: #183035;
-    color: #22915b;
+    color: #1ea564;
 }
