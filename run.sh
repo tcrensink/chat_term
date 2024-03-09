@@ -27,10 +27,11 @@ if [ "$1" = "--help" ]; then
     echo "chat stop       # kills tmux chat_term session"
 
 elif [ "$1" = "restart" ]; then
-    "$PROJECT_FOLDER/restart.sh"
+    tmux kill-session -t chat_term
+    "$PROJECT_FOLDER/run.sh"
 
 elif [ "$1" = "stop" ]; then
-    "$PROJECT_FOLDER/stop.sh"
+    tmux kill-session -t chat_term
     if [ $? -eq 0 ]; then
         echo "killed chat_term session"
     else
