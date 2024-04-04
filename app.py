@@ -14,7 +14,7 @@ from textual.reactive import var
 # stores chat history until reset.
 SESSION_CONTEXT = {
     "role": "system",
-    "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'.",
+    "content": "",
 }
 
 try:
@@ -43,10 +43,25 @@ def get_key():
     secrets_file = os.path.join(BASE_PATH, "secrets.json")
     with open(secrets_file) as fp:
         secrets = json.load(fp)
-        openai_api_key = secrets.get("OPENAI_API_KEY")
-        if not openai_api_key:
-            raise Exception("you must provide your OPENAI_API_KEY in secrets.json")
-    return openai_api_key
+        api_key = secrets.get("API_KEY")
+        if not api_key:
+            raise Exception("you must provide your API_KEY in secrets.json")
+    return api_key
+
+def get_base_url():
+    """Return the open ai api key."""
+    secrets_file = os.path.join(BASE_PATH, "secrets.json")
+    with open(secrets_file) as fp:
+        secrets = json.load(fp)
+        base_url = secrets.get("BASE_URL")
+    return base_url
+def get_model():
+    """Return the open ai api key."""
+    secrets_file = os.path.join(BASE_PATH, "secrets.json")
+    with open(secrets_file) as fp:
+        secrets = json.load(fp)
+        model = secrets.get("MODEL")
+    return model
 
 
 class InputText(Static):
@@ -163,10 +178,10 @@ class ChatApp(App):
         self.action_add_query(query_str=query_str)
         response_text = self.action_add_response()
         current_response = ""
-        client = AsyncOpenAI(api_key=get_key())
+        client = AsyncOpenAI(api_key=get_key(), base_url=get_base_url())
         stream = await client.chat.completions.create(
             messages=self.chat_history,
-            model=CONFIG["model"],
+            model=get_model(),
             stream=True,
         )
         async for part in stream:
