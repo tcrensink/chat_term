@@ -109,17 +109,25 @@ class ChatApp(App):
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
         Binding("ctrl+c", "", "", show=False),
         Binding("j", "scroll_down"),
-        Binding("k", "scroll_up")
+        Binding("k", "scroll_up"),
+        Binding("i", "input_focus"),
+
     ]
     def action_scroll_up(self):
         """Scroll up in response text."""
-        response_text = self.query_one("#content_window").query("ResponseText")
+        response_text = self.query_one("#content_window")
+        
         response_text.scroll_up()
 
     def action_scroll_down(self):
         """Scroll down in response text."""
-        response_text = self.query_one("#content_window").query("ResponseText")
+        response_text = self.query_one("#content_window")
         response_text.scroll_down()
+
+    def action_input_focus(self):
+        """Scroll up in response text."""
+        widget = self.query_one("#input", MyTextArea)
+        widget.focus()
 
     chat_history = [SESSION_CONTEXT]
 
