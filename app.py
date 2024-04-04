@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 import os
 import json
+from typing_extensions import Literal
 from openai import AsyncOpenAI
 import pyperclip
 from textual.binding import Binding
 from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Static, Markdown, TextArea
+from textual.widgets import Footer, Static, Markdown, TextArea, Label
+
 from textual.containers import VerticalScroll
 from textual import events
 from textual.reactive import var
+
 
 # stores chat history until reset.
 SESSION_CONTEXT = {
@@ -86,9 +89,9 @@ class ResponseText(Markdown):
                 attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
             )
 
-    def append_text(self, new_text):
+    async def append_text(self, new_text):
         self._text += new_text
-        self.update(self._text)
+        await self.update(self._text)
 
     def clear_text(self):
         self._text = ""
@@ -99,11 +102,35 @@ class MyTextArea(TextArea):
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
         Binding("ctrl+c", "", "", show=False)
     ]
-    show_line_numbers = CONFIG["show_line_numbers"]
+    height = 3
+    
+
+    def action_input_focus(self):
+        """Scroll up in response text."""
+        widget = self.my_text_area
+        widget.focus()
+    
+    def on_key(self, event: events.Key) -> None:
+        if event.key == "ctrl+c":
+            self.app.exit()
+        
+
+
+        
 
 
 class ChatApp(App):
     """chat TUI"""
+
+    def __init__(self):
+        super().__init__()
+        
+        self.my_text_area = MyTextArea(id="input", soft_wrap=True).code_editor(
+            theme="dracula", language="markdown", soft_wrap=True,
+            show_line_numbers=True, id="editor", 
+        )  
+        # Instantiate MyTextArea and keep a reference
+        
 
     CSS_PATH = "chat.css"
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
@@ -126,7 +153,7 @@ class ChatApp(App):
 
     def action_input_focus(self):
         """Scroll up in response text."""
-        widget = self.query_one("#input", MyTextArea)
+        widget = self.my_text_area
         widget.focus()
 
     chat_history = [SESSION_CONTEXT]
@@ -143,8 +170,9 @@ class ChatApp(App):
 
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="content_window"):
-            yield InputText(id="results")
-        yield MyTextArea(id="input", soft_wrap=True)
+            yield InputText(id="results")        
+        yield Label("Enter your text:", id="prompt-label") 
+        yield self.my_text_area
         yield Footer()
 
     def on_mount(self) -> None:
@@ -160,7 +188,7 @@ class ChatApp(App):
         window = self.query_one("#content_window")
         window.query("InputText").remove()
         window.query("ResponseText").remove()
-        input_widget = self.query_one("#input", MyTextArea)
+        input_widget = self.my_text_area
         input_widget.load_text("")
         input_widget.focus()
 
@@ -168,7 +196,7 @@ class ChatApp(App):
         """Add next query section."""
         self.chat_history.append({"role": "user", "content": query_str})
         #input_widget = self.query_one("#input", MyTextArea).load_text("")
-        query_text = InputText(query_str)
+        query_text = InputText("󰜴 You : " + query_str)
         content_window = self.query_one("#content_window", VerticalScroll)
         content_window.mount(query_text)
         query_text.scroll_visible()
@@ -176,14 +204,16 @@ class ChatApp(App):
 
     def action_add_response(self) -> None:
         """Add next response section."""
-        response_text = ResponseText()
+        response_text = ResponseText("Model 🤖 ...")
+        content_window = self.query_one("#content_window", VerticalScroll)
         self.query_one("#content_window").mount(response_text)
         response_text.scroll_visible()
         return response_text
+    
 
     async def action_submit(self) -> None:
         """Submit chat text."""
-        widget = self.query_one("#input", MyTextArea)
+        widget = self.my_text_area
         query_str = widget.text
         if query_str:
             widget.clear()
@@ -211,7 +241,9 @@ class ChatApp(App):
             content = part.choices[0].delta.content or ""
             if content is not None:
                 current_response += content
-                response_text.append_text(content)
+                
+                await response_text.append_text(content)
+                
 
         if current_response is not None:
             self.chat_history.append(
