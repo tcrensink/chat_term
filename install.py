@@ -15,13 +15,52 @@ function chat() {{
 """
 
 
-def set_openai_key(key_string):
+def set_api_key(key_string):
     # save api key to secrets.json
     if not os.path.exists("secrets.json"):
-        os.system("touch secrets.json")
-    with open("secrets.json", "w") as fp:
-        json_data = {"OPENAI_API_KEY": key_string}
+        with open("secrets.json", "w") as fp:
+            json.dump({}, fp)  # Create an empty JSON object if file doesn't exist
+    with open("secrets.json", "r+") as fp:
+        json_data = json.load(fp)
+        json_data["API_KEY"] = key_string
+        fp.seek(0)  # Move the file pointer to the beginning
         json.dump(json_data, fp, sort_keys=True, indent=4)
+        fp.truncate()  # Truncate the file to remove any remaining data
+
+
+def set_base_url(url_string):
+    # save base url to secrets.json
+    if not os.path.exists("secrets.json"):
+        with open("secrets.json", "w") as fp:
+            json.dump({}, fp)
+    with open("secrets.json", "r+") as fp:
+        json_data = json.load(fp)
+        if "openrouter" in url_string.lower():
+            json_data["BASE_URL"] = "https://openrouter.ai/api/v1"
+            # Set default model to google/gemma-7b-it:free if base URL contains openrouter
+            json_data["MODEL"] = "google/gemma-7b-it:free"
+        else:
+            json_data["BASE_URL"] = "https://api.openai.com/v1"   
+            json_data["MODEL"] = "gpt-4"
+        fp.seek(0)
+        json.dump(json_data, fp, sort_keys=True, indent=4)
+        fp.truncate()
+
+def set_base_model(model_string):
+    # Save model to secrets.json if model_string is not empty
+    if model_string:
+        if not os.path.exists("secrets.json"):
+            with open("secrets.json", "w") as fp:
+                json.dump({"MODEL": model_string}, fp, sort_keys=True, indent=4)
+        else:
+            with open("secrets.json", "r+") as fp:
+                json_data = json.load(fp)
+                if "MODEL" in json_data:
+                    json_data["MODEL"] = model_string
+                    fp.seek(0)
+                    json.dump(json_data, fp, sort_keys=True, indent=4)
+                    fp.truncate()
+
 
 
 def check_base_reqs() -> bool:
@@ -58,13 +97,26 @@ def main():
     while True:
         if os.path.exists("secrets.json"):
             print("secrets.json already exists, continuing...")
+            break
         else:
-            key_str = input(
-                f"\nEnter openai_api_key (required). This will be stored in {PROJECT_FOLDER}/secrets.json: "
+            base_url_str = input(
+                f"\n[1/3] All settings will be stored in {PROJECT_FOLDER}/secrets.json.\n[OPTINAL] Type openreouter or leave Empty for default: "
             )
-            yn_resp = input(f"is this correct? (y/n): {key_str}")
+            key_str = input(
+                f"\n[2/3] REQUIRED.\nProvide your api_key [openai/openrouter] : "
+            )
+            model_str = input(
+                f"\n[3/3] defaults: openai/gpt-4, openrouter/gemma-7b .\nType model name or leave Empty for defaults: "
+            )
+            set_api_key(key_str)
+            set_base_url(base_url_str)
+            set_base_model(model_str)
+    
+            yn_resp = input(f"is this correct? (y/n): {key_str}, {base_url_str}, {model_str} (y/n): ")
             if yn_resp.lower() in ("yes", "y", ""):
-                set_openai_key(key_str)
+                """ set_api_key(key_str)
+                set_base_url(base_url_str)
+                set_base_model(model_str) """
                 break
 
     resp = input("Install python requirements? (y/n): ")
