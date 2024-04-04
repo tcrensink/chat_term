@@ -6,7 +6,7 @@ import pyperclip
 from textual.binding import Binding
 from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Static, Label, TextArea
+from textual.widgets import Footer, Static, Markdown, TextArea
 from textual.containers import VerticalScroll
 from textual import events
 from textual.reactive import var
@@ -70,7 +70,7 @@ class InputText(Static):
     pass
 
 
-class ResponseText(Static):
+class ResponseText(Markdown):
     """Formatted widget that contains response text."""
 
     def __init__(self, *args, **kwargs):
@@ -107,8 +107,19 @@ class ChatApp(App):
 
     CSS_PATH = "chat.css"
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
-        Binding("ctrl+c", "", "", show=False)
+        Binding("ctrl+c", "", "", show=False),
+        Binding("j", "scroll_down"),
+        Binding("k", "scroll_up")
     ]
+    def action_scroll_up(self):
+        """Scroll up in response text."""
+        response_text = self.query_one("#content_window").query("ResponseText")
+        response_text.scroll_up()
+
+    def action_scroll_down(self):
+        """Scroll down in response text."""
+        response_text = self.query_one("#content_window").query("ResponseText")
+        response_text.scroll_down()
 
     chat_history = [SESSION_CONTEXT]
 
@@ -148,7 +159,7 @@ class ChatApp(App):
     def action_add_query(self, query_str) -> None:
         """Add next query section."""
         self.chat_history.append({"role": "user", "content": query_str})
-        input_widget = self.query_one("#input", MyTextArea).load_text("")
+        #input_widget = self.query_one("#input", MyTextArea).load_text("")
         query_text = InputText(query_str)
         content_window = self.query_one("#content_window", VerticalScroll)
         content_window.mount(query_text)
@@ -169,6 +180,10 @@ class ChatApp(App):
         if query_str:
             widget.clear()
             self.issue_query(query_str)
+            response_text = self.query_one("#content_window").query("ResponseText")
+            widget.blur()
+            response_text.focus()
+            
         else:
             pass
 
