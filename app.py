@@ -171,7 +171,7 @@ class ChatApp(App):
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="content_window"):
             yield InputText(id="results")        
-        yield Label("Enter your text:") 
+        yield Label("Enter your text:", id="prompt-label") 
         yield self.my_text_area
         yield Footer()
 
@@ -196,7 +196,7 @@ class ChatApp(App):
         """Add next query section."""
         self.chat_history.append({"role": "user", "content": query_str})
         #input_widget = self.query_one("#input", MyTextArea).load_text("")
-        query_text = InputText(query_str)
+        query_text = InputText("󰜴 You : " + query_str)
         content_window = self.query_one("#content_window", VerticalScroll)
         content_window.mount(query_text)
         query_text.scroll_visible()
@@ -204,7 +204,8 @@ class ChatApp(App):
 
     def action_add_response(self) -> None:
         """Add next response section."""
-        response_text = ResponseText()
+        response_text = ResponseText("Model 🤖 ...")
+        content_window = self.query_one("#content_window", VerticalScroll)
         self.query_one("#content_window").mount(response_text)
         response_text.scroll_visible()
         return response_text

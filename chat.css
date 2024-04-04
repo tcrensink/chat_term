@@ -5,13 +5,24 @@
     margin: 0 0 0 0;
     height: 8;
     background: #182d32;
+    
    
 }
 #editor {
     height: 25%;
     border: #b85616;
-    background: #0b1618;
+    background: #022025;
     color: #b85616;
+    
+}
+#prompt-label {
+    color: #ffffff;
+    background: #006161;
+    padding: 0 1 0 1;
+    margin: 0 0 0 0;
+    text-style: bold;
+    
+
 }
 
 ChatApp.-expanded-input #input {
@@ -19,19 +30,20 @@ ChatApp.-expanded-input #input {
 }
 
 #content_window {
-    background: #0b1618;
+    background: #031f24;
+    padding: 0 1 0 1;
 }
 
 InputText {
     width: 100%;
-    margin: 0 25 0 0;
+    margin: 0 2 0 2;
     color: #c2bd20;
     
 }
 
 ResponseText {
     width: 100%;
-    margin: 0 0 5 5;
+    margin: 0 3 0 3;
     color: #b85616;
     
 }
