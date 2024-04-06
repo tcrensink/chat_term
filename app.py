@@ -178,10 +178,11 @@ class ChatApp(App):
     def on_mount(self) -> None:
         """Called when app starts."""
         # Give the input focus, so we can start typing straight away
-        self.query_one(MyTextArea).focus()
+        self.my_text_area.focus()
 
     def action_focus_input(self) -> None:
-        self.query_one(MyTextArea).focus()
+        
+        self.my_text_area.focus()
 
     def action_reset_chat_session(self) -> None:
         self.chat_history = [SESSION_CONTEXT]
