@@ -171,7 +171,7 @@ class ChatApp(App):
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="content_window"):
             yield InputText(id="results")        
-        yield Label("Enter your text:", id="prompt-label") 
+        yield Label("Enter your message:", id="prompt-label") 
         yield self.my_text_area
         yield Footer()
 
