@@ -14,8 +14,7 @@ if [ $# -eq 0 ]; then
     else
     # if session does not exist, create it
         echo "starting chat_term session..."
-        tmux -f "$PROJECT_FOLDER/tmux.conf" new-session -d -s chat_term
-        tmux send-keys -t chat_term "$TMUX_COMMAND" C-m
+        tmux -f "$PROJECT_FOLDER/tmux.conf" new-session -d -s chat_term "$TMUX_COMMAND"
         tmux attach-session -t chat_term
     fi
     exit 0
@@ -25,10 +24,18 @@ if [ "$1" = "--help" ]; then
     echo "chat            # starts or connects to chat_term session"
     echo "chat restart    # restarts chat_term session in case of error"
     echo "chat stop       # kills tmux chat_term session"
+    echo "chat ls         # list tmux sessions"
 
 elif [ "$1" = "restart" ]; then
     tmux kill-session -t chat_term
     "$PROJECT_FOLDER/run.sh"
+elif [ "$1" = "ls" ]; then
+    output=$(tmux ls | grep chat_term)
+    if [ -z "$output" ]; then
+        echo "no chat_term session found"
+    else
+        echo "$output"
+    fi
 
 elif [ "$1" = "stop" ]; then
     tmux kill-session -t chat_term
