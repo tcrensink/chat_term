@@ -161,14 +161,19 @@ class ChatApp(App):
     async def issue_query(self, query_str: str) -> None:
         """Query chat gpt."""
         self.action_add_query(query_str=query_str)
-        response_text = self.action_add_response()
-        current_response = ""
         client = AsyncOpenAI(api_key=get_key())
         stream = await client.chat.completions.create(
             messages=self.chat_history,
             model=CONFIG["model"],
             stream=True,
         )
+        await self.render_response(stream)
+
+    async def render_response(self, stream):
+        """Given a stream object, render response widgets."""
+
+        response_text = self.action_add_response()
+        current_response = ""
         async for part in stream:
             content = part.choices[0].delta.content or ""
             if content is not None:
