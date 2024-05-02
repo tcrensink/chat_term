@@ -61,10 +61,15 @@ class InputText(Static):
     pass
 
 
-class ResponseCode(Markdown):
+class ResponseCode(Static):
+    """Widget that contains code block.
+
+    Separate from ResponseText to allow syntax highlighting.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._markdown = ""
+        self._raw_text = ""
         self._display_text = ""
 
     def on_click(self) -> None:
@@ -76,20 +81,10 @@ class ResponseCode(Markdown):
                 attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
             )
 
-    def append_text(self, text, display_text):
-        self._markdown += text
-        self._display_text += display_text
-        self.update(self._markdown)
-
-    def clear_text(self):
-        self._markdown = ""
-        self._display_text = ""
-        self.update(self._markdown)
-
     def set_text(self, text, display_text):
-        self._markdown = text
+        self._raw_text = text
         self._display_text = display_text
-        self.update(self._markdown)
+        self.update(self._display_text)
 
 
 class ResponseText(Static):
@@ -97,7 +92,7 @@ class ResponseText(Static):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._text = ""
+        self._raw_text = ""
         self._display_text = ""
 
     def on_click(self) -> None:
@@ -109,20 +104,10 @@ class ResponseText(Static):
                 attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
             )
 
-    def append_text(self, new_text, display_text):
-        self._text += new_text
-        self._display_text += display_text
-        self.update(self._text)
-
-    def clear_text(self):
-        self._text = ""
-        self._display_text = ""
-        self.update(self._text)
-
     def set_text(self, text, display_text):
-        self._text = text
+        self._raw_text = text
         self._display_text = display_text
-        self.update(self._text)
+        self.update(self._display_text)
 
 
 class MyTextArea(TextArea):
@@ -189,7 +174,7 @@ class ChatApp(App):
     def action_add_response_widget(self, widget):
         """Add next response section."""
         self.query_one("#content_window").mount(widget)
-        # response_text.scroll_visible()
+        widget.scroll_visible()
         return widget
 
     async def action_submit(self) -> None:
@@ -239,7 +224,7 @@ class ChatApp(App):
             # create current_widget if it doesn't exist
             if not current_widget and outputs:
                 if outputs[0]["type"] == "code":
-                    current_widget = ResponseText()
+                    current_widget = ResponseCode()
                 else:
                     current_widget = ResponseText()
                 self.action_add_response_widget(current_widget)
@@ -252,11 +237,11 @@ class ChatApp(App):
 
             # case where first widget should be updated, subsequent created
             elif len(outputs) > 1:
-                text = outputs[0]["text_span"]
-                display_text = outputs[0]["display_text"]
                 for output in outputs[1:]:
+                    text = output["text_span"]
+                    display_text = output["display_text"]
                     if output["type"] == "code":
-                        current_widget = ResponseText()
+                        current_widget = ResponseCode()
                     else:
                         current_widget = ResponseText()
                     current_widget.set_text(text, display_text)
@@ -394,6 +379,7 @@ def test_parse_text():
     )
 
 
+# this is a modified and monkey patched version of marko.block.FencedCode
 class FencedCode(FencedCode):
     """Fenced code block: (```python\nhello\n```\n)"""
 
