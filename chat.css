@@ -20,6 +20,12 @@ InputText {
     color: #c2bd20;
 }
 
+ResponseCode {
+    width: 100%;
+    margin: 0 0 1 25;
+    color: #b85616;
+}
+
 ResponseText {
     width: 100%;
     margin: 0 0 1 25;

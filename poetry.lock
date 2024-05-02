@@ -393,6 +393,22 @@ rtd = ["jupyter_sphinx", "mdit-py-plugins", "myst-parser", "pyyaml", "sphinx", "
 testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 
 [[package]]
+name = "marko"
+version = "2.0.3"
+description = "A markdown parser with high extensibility."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "marko-2.0.3-py3-none-any.whl", hash = "sha256:7fca1c4ab1dbc09b4b3be83c22caafd7d97c99439cb4143d025727cb3df1f4d0"},
+    {file = "marko-2.0.3.tar.gz", hash = "sha256:3b323dcd7dd48181871718ac09b3825bc8f74493cec378f2bacaaceec47577d4"},
+]
+
+[package.extras]
+codehilite = ["pygments"]
+repr = ["objprint"]
+toc = ["python-slugify"]
+
+[[package]]
 name = "matplotlib-inline"
 version = "0.1.7"
 description = "Inline Matplotlib backend for Jupyter"
@@ -852,4 +868,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "3a6b911881f5a719ebf12e737fbf807e67a56e55ca95a40be31a46a3b0d01d4c"
+content-hash = "1fc25c5284a6ce99d217d6d838aff663453b253498d52c40231a327f077db01c"
