@@ -10,6 +10,7 @@ from textual.widgets import Footer, Static, Label, TextArea
 from textual.containers import VerticalScroll
 from textual import events
 from textual.reactive import var
+from parse_utils import parse_text
 
 # stores chat history until reset.
 SESSION_CONTEXT = {
@@ -55,29 +56,53 @@ class InputText(Static):
     pass
 
 
-class ResponseText(Static):
-    """Formatted widget that contains response text."""
+class ResponseCode(Static):
+    """Widget that contains code block.
+
+    Separate from ResponseText to allow syntax highlighting.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._text = ""
+        self._raw_text = ""
+        self._display_text = ""
 
     def on_click(self) -> None:
-        """Visual feedback if copy successful"""
-        copied = copy_to_clipboard(self._text)
+        """copy extracted code block to clipboard"""
+        copied = copy_to_clipboard(self._display_text)
         if copied:
             self.styles.opacity = 0.0
             self.styles.animate(
                 attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
             )
 
-    def append_text(self, new_text):
-        self._text += new_text
-        self.update(self._text)
+    def set_text(self, text, display_text):
+        self._raw_text = text
+        self._display_text = display_text
+        self.update(self._display_text)
 
-    def clear_text(self):
-        self._text = ""
-        self.update(self._text)
+
+class ResponseText(Static):
+    """Formatted widget that contains response text."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._raw_text = ""
+        self._display_text = ""
+
+    def on_click(self) -> None:
+        """Visual feedback if copy successful"""
+        copied = copy_to_clipboard(self._display_text)
+        if copied:
+            self.styles.opacity = 0.0
+            self.styles.animate(
+                attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
+            )
+
+    def set_text(self, text, display_text):
+        self._raw_text = text
+        self._display_text = display_text
+        self.update(self._display_text)
 
 
 class MyTextArea(TextArea):
@@ -90,7 +115,7 @@ class MyTextArea(TextArea):
 class ChatApp(App):
     """chat TUI"""
 
-    CSS_PATH = "chat.css"
+    CSS_PATH = os.path.join(BASE_PATH, "chat.css")
     BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
         Binding("ctrl+c", "", "", show=False)
     ]
@@ -126,6 +151,7 @@ class ChatApp(App):
         window = self.query_one("#content_window")
         window.query("InputText").remove()
         window.query("ResponseText").remove()
+        window.query("ResponseCode").remove()
         input_widget = self.query_one("#input", MyTextArea)
         input_widget.load_text("")
         input_widget.focus()
@@ -140,12 +166,11 @@ class ChatApp(App):
         query_text.scroll_visible()
         return query_text
 
-    def action_add_response(self) -> None:
+    def action_add_response_widget(self, widget):
         """Add next response section."""
-        response_text = ResponseText()
-        self.query_one("#content_window").mount(response_text)
-        response_text.scroll_visible()
-        return response_text
+        self.query_one("#content_window").mount(widget)
+        widget.scroll_visible()
+        return widget
 
     async def action_submit(self) -> None:
         """Submit chat text."""
@@ -161,23 +186,69 @@ class ChatApp(App):
     async def issue_query(self, query_str: str) -> None:
         """Query chat gpt."""
         self.action_add_query(query_str=query_str)
-        response_text = self.action_add_response()
-        current_response = ""
         client = AsyncOpenAI(api_key=get_key())
         stream = await client.chat.completions.create(
             messages=self.chat_history,
             model=CONFIG["model"],
             stream=True,
         )
-        async for part in stream:
-            content = part.choices[0].delta.content or ""
-            if content is not None:
-                current_response += content
-                response_text.append_text(content)
+        await self.render_response(stream)
 
-        if current_response is not None:
+    async def render_response(self, stream):
+        """Given a stream object, render response widgets.
+
+        - parse_text(curr_text) splits text into code and text blocks
+        - create current_widget if it doesn't exist
+        - update text of first/current widget (often only)
+        - if multiple outputs, create new widget for each output, mark last one current_widget
+        - append entire response to text history
+        """
+
+        response_text = ""
+        curr_text = ""
+        # widget being updated
+        current_widget = None
+
+        async for part in stream:
+            text_chunk = part.choices[0].delta.content or ""
+            response_text += text_chunk
+            curr_text += text_chunk
+            outputs = parse_text(curr_text)
+
+            # create current_widget if it doesn't exist
+            if outputs:
+                if not current_widget:
+                    if outputs[0]["type"] == "code":
+                        current_widget = ResponseCode()
+                    else:
+                        current_widget = ResponseText()
+                    self.action_add_response_widget(current_widget)
+
+                # always update first (often only) widget
+                text = outputs[0]["raw_text"]
+                display_text = outputs[0]["display_text"]
+                current_widget.set_text(text, display_text)
+
+                # create new widgets for each additional output; make last one current_widget
+                for output in outputs[1:]:
+                    text = output["raw_text"]
+                    display_text = output["display_text"]
+                    if output["type"] == "code":
+                        current_widget = ResponseCode()
+                    else:
+                        current_widget = ResponseText()
+                    current_widget.set_text(text, display_text)
+                    self.action_add_response_widget(current_widget)
+                # curr_text set by last widget
+                curr_text = outputs[-1]["raw_text"]
+
+        self.update_chat_history(response_text)
+
+    def update_chat_history(self, response_text: str):
+        """update chat history with current response."""
+        if response_text is not None:
             self.chat_history.append(
-                {"role": "assistant", "content": str(current_response)}
+                {"role": "assistant", "content": str(response_text)}
             )
 
 
