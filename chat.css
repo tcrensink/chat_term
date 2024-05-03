@@ -22,13 +22,13 @@ InputText {
 
 ResponseCode {
     width: 100%;
-    margin: 0 0 1 25;
+    margin: 0 0 0 25;
     color: #ee7e28;
 }
 
 ResponseText {
     width: 100%;
-    margin: 0 0 1 25;
+    margin: 0 0 0 25;
     color: #b85616;
 }
 

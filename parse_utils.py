@@ -79,13 +79,13 @@ def parse_text(text):
             block = text[idx1 : child.start]
             if idx1 < child.start and len(block.strip()) > 0:
                 output.append(
-                    {"text_span": block, "display_text": block.strip(), "type": "text"}
+                    {"raw_text": block, "display_text": block.strip(), "type": "text"}
                 )
             # append code block
             block = text[child.start : child.end]
             output.append(
                 {
-                    "text_span": block,
+                    "raw_text": block,
                     "display_text": child.children[0].children,
                     "type": "code",
                 }
@@ -97,7 +97,7 @@ def parse_text(text):
     block = text[idx1:idx2]
     if len(block.strip()) > 0:
         output.append(
-            {"text_span": block, "display_text": block.strip(), "type": "text"}
+            {"raw_text": block, "display_text": block.strip(), "type": "text"}
         )
     return output
 
@@ -108,78 +108,78 @@ def test_parse_text():
     parse_text(no_text_code)
     assert parse_text(no_text_code) == [
         {
-            "text_span": "just some non-code text",
+            "raw_text": "just some non-code text",
             "display_text": "just some non-code text",
             "type": "text",
         }
     ]
-    assert len(parse_text(no_text_code)[0]["text_span"]) == len(no_text_code)
+    assert len(parse_text(no_text_code)[0]["raw_text"]) == len(no_text_code)
 
     text_code_only = """```python\nprint("hello world")\n```"""
     assert parse_text(text_code_only) == [
         {
-            "text_span": '```python\nprint("hello world")\n```',
+            "raw_text": '```python\nprint("hello world")\n```',
             "display_text": 'print("hello world")\n',
             "type": "code",
         }
     ]
-    assert len(parse_text(text_code_only)[0]["text_span"]) == len(text_code_only)
+    assert len(parse_text(text_code_only)[0]["raw_text"]) == len(text_code_only)
 
     code_then_text = (
         """```python\nprint("hello world")\n```\n\n\n\nand some other stuff"""
     )
     assert parse_text(code_then_text) == [
         {
-            "text_span": '```python\nprint("hello world")\n```\n',
+            "raw_text": '```python\nprint("hello world")\n```\n',
             "display_text": 'print("hello world")\n',
             "type": "code",
         },
         {
-            "text_span": "\n\n\nand some other stuff",
+            "raw_text": "\n\n\nand some other stuff",
             "display_text": "and some other stuff",
             "type": "text",
         },
     ]
-    assert sum([len(x["text_span"]) for x in parse_text(code_then_text)]) == len(
+    assert sum([len(x["raw_text"]) for x in parse_text(code_then_text)]) == len(
         code_then_text
     )
 
     text_then_code = """starting text, then:\n```python\nprint("hello world")\n```"""
     assert parse_text(text_then_code) == [
         {
-            "text_span": "starting text, then:\n",
+            "raw_text": "starting text, then:\n",
             "display_text": "starting text, then:",
             "type": "text",
         },
         {
-            "text_span": '```python\nprint("hello world")\n```',
+            "raw_text": '```python\nprint("hello world")\n```',
             "display_text": 'print("hello world")\n',
             "type": "code",
         },
     ]
-    assert sum([len(x["text_span"]) for x in parse_text(text_then_code)]) == len(
+    assert sum([len(x["raw_text"]) for x in parse_text(text_then_code)]) == len(
         text_then_code
     )
 
     text_code_alternating = """```python\nprint("hello world")\n```\nok some more text, and\n```python\nprint("hello world")\n```\nend text here"""
     assert parse_text(text_code_alternating) == [
         {
-            "text_span": '```python\nprint("hello world")\n```\n',
+            "raw_text": '```python\nprint("hello world")\n```\n',
             "display_text": 'print("hello world")\n',
             "type": "code",
         },
         {
-            "text_span": "ok some more text, and\n",
+            "raw_text": "ok some more text, and\n",
             "display_text": "ok some more text, and",
             "type": "text",
         },
         {
-            "text_span": '```python\nprint("hello world")\n```\n',
+            "raw_text": '```python\nprint("hello world")\n```\n',
             "display_text": 'print("hello world")\n',
             "type": "code",
         },
-        {"text_span": "end text here", "display_text": "end text here", "type": "text"},
+        {"raw_text": "end text here", "display_text": "end text here", "type": "text"},
     ]
-    assert sum([len(x["text_span"]) for x in parse_text(text_code_alternating)]) == len(
+    assert sum([len(x["raw_text"]) for x in parse_text(text_code_alternating)]) == len(
         text_code_alternating
     )

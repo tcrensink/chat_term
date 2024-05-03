@@ -197,17 +197,16 @@ class ChatApp(App):
     async def render_response(self, stream):
         """Given a stream object, render response widgets.
 
-        algo:
-        - use parse_text(current_text) to identify text spans for widgets
+        - parse_text(curr_text) splits text into code and text blocks
         - create current_widget if it doesn't exist
-        - if only one output, update display_text of current_widget
-        - if multiple outputs, create new widgets for each output and make last one current_widget
+        - update text of first/current widget (often only)
+        - if multiple outputs, create new widget for each output, mark last one current_widget
         - append entire response to text history
         """
-        # text for full response and current widget
+
         response_text = ""
         curr_text = ""
-        # the latest widget; may be updated with streamed text
+        # widget being updated
         current_widget = None
 
         async for part in stream:
@@ -217,23 +216,22 @@ class ChatApp(App):
             outputs = parse_text(curr_text)
 
             # create current_widget if it doesn't exist
-            if not current_widget and outputs:
-                if outputs[0]["type"] == "code":
-                    current_widget = ResponseCode()
-                else:
-                    current_widget = ResponseText()
-                self.action_add_response_widget(current_widget)
+            if outputs:
+                if not current_widget:
+                    if outputs[0]["type"] == "code":
+                        current_widget = ResponseCode()
+                    else:
+                        current_widget = ResponseText()
+                    self.action_add_response_widget(current_widget)
 
-            # typical case: update display_text of current_widget
-            if len(outputs) == 1:
-                text = outputs[0]["text_span"]
+                # always update first (often only) widget
+                text = outputs[0]["raw_text"]
                 display_text = outputs[0]["display_text"]
                 current_widget.set_text(text, display_text)
 
-            # case where first widget should be updated, subsequent created
-            elif len(outputs) > 1:
+                # create new widgets for each additional output; make last one current_widget
                 for output in outputs[1:]:
-                    text = output["text_span"]
+                    text = output["raw_text"]
                     display_text = output["display_text"]
                     if output["type"] == "code":
                         current_widget = ResponseCode()
@@ -241,7 +239,8 @@ class ChatApp(App):
                         current_widget = ResponseText()
                     current_widget.set_text(text, display_text)
                     self.action_add_response_widget(current_widget)
-                curr_text = outputs[-1]["text_span"]
+                # curr_text set by last widget
+                curr_text = outputs[-1]["raw_text"]
 
         self.update_chat_history(response_text)
 
