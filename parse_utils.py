@@ -1,9 +1,41 @@
 import marko
 import re
+import copy
 from marko import inline
 from marko.block import BlockElement, FencedCode
 from marko.source import Source
 from typing import TYPE_CHECKING, Any, Match, NamedTuple
+from rich.markdown import Markdown
+from rich.markdown import TextElement, Token, Console, ConsoleOptions, RenderResult
+from rich.text import Text
+
+
+class RevisedHeading(TextElement):
+    """A heading with minimal formatting."""
+
+    @classmethod
+    def create(cls, markdown: "Markdown", token: Token) -> "Heading":
+        return cls(token.tag)
+
+    def on_enter(self, context: "MarkdownContext") -> None:
+        self.text = Text()
+        context.enter_style(self.style_name)
+
+    def __init__(self, tag: str) -> None:
+        self.tag = tag
+        self.style_name = "bold"
+        super().__init__()
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        yield self.text
+
+
+# this is a Markdown class with slightly simplified rendering
+class MinimalMarkdown(Markdown):
+    elements = copy.deepcopy(Markdown.elements)
+    elements["heading_open"] = RevisedHeading
 
 
 # this is a modified and monkey patched version of marko.block.FencedCode
@@ -79,7 +111,7 @@ def parse_text(text):
             block = text[idx1 : child.start]
             if idx1 < child.start and len(block.strip()) > 0:
                 output.append(
-                    {"raw_text": block, "display_text": block.strip(), "type": "text"}
+                    {"raw_text": block, "display_text": block, "type": "text"}
                 )
             # append code block
             block = text[child.start : child.end]
