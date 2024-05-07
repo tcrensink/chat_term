@@ -34,7 +34,7 @@ chat --help # displays commands as described above
 # Installation
 
 Requirements:
-- python 3.9+
+- python 3.10+
 - tmux
 - poetry
 - openai api key
