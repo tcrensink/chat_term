@@ -1,10 +1,9 @@
 #! /usr/bin/env python
-
 import json
 import os
 import subprocess
 import shutil
-
+import sys
 
 PROJECT_FOLDER = os.path.abspath(os.path.dirname(__file__))
 
@@ -39,7 +38,7 @@ def check_base_reqs() -> bool:
     if return_val is False:
         msg += "Installation failed."
     else:
-        msg += "Base requirements satisfied."
+        msg += "Found poetry and tmux."
     print(msg)
     return return_val
 
@@ -49,6 +48,13 @@ def install_reqs():
     output = subprocess.run(["poetry", "install"], capture_output=True, text=True)
     print(output.stdout)
 
+    output = subprocess.run(["poetry", "install"], capture_output=True, text=True)
+    if output.returncode != 0:
+        error_message = output.stderr
+        print(error_message)
+        if "version" in error_message:
+            print(f"use pyenv to install a specific version of python: https://github.com/pyenv/pyenv#getting-pyenv")
+        sys.exit(1)
 
 def main():
     print("This script will guide you through installation.\n")
@@ -58,16 +64,17 @@ def main():
     while True:
         if os.path.exists("secrets.json"):
             print("secrets.json already exists, continuing...")
+            break
         else:
             key_str = input(
                 f"\nEnter openai_api_key (required). This will be stored in {PROJECT_FOLDER}/secrets.json: "
             )
-            yn_resp = input(f"is this correct? (y/n): {key_str}")
+            yn_resp = input(f"is this correct? (Y/n): {key_str}")
             if yn_resp.lower() in ("yes", "y", ""):
                 set_openai_key(key_str)
                 break
 
-    resp = input("Install python requirements? (y/n): ")
+    resp = input("Install python requirements? (Y/n): ")
     if resp.lower() in ("yes", "y", ""):
         install_reqs()
         print("requirements installed.")
