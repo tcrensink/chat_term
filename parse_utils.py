@@ -34,8 +34,7 @@ class RevisedHeading(TextElement):
 
 # this is a Markdown class with slightly simplified rendering
 class MinimalMarkdown(Markdown):
-    elements = copy.deepcopy(Markdown.elements)
-    elements["heading_open"] = RevisedHeading
+    Markdown.elements["heading_open"] = RevisedHeading
 
 
 # this is a modified and monkey patched version of marko.block.FencedCode

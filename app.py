@@ -68,7 +68,6 @@ class ResponseCode(Static):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._raw_text = ""
-        # self._display_text = ""
         self._display_text: Reactive = Reactive("")
 
     def on_click(self) -> None:
