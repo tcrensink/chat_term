@@ -11,11 +11,14 @@ from textual.containers import VerticalScroll
 from textual import events
 from textual.reactive import var
 from parse_utils import parse_text
+from textual.reactive import Reactive
+from rich.style import Style
+from parse_utils import parse_text, MinimalMarkdown
 
 # stores chat history until reset.
 SESSION_CONTEXT = {
     "role": "system",
-    "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'.",
+    "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified.",
 }
 
 try:
@@ -65,7 +68,7 @@ class ResponseCode(Static):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._raw_text = ""
-        self._display_text = ""
+        self._display_text: Reactive = Reactive("")
 
     def on_click(self) -> None:
         """copy extracted code block to clipboard"""
@@ -79,7 +82,9 @@ class ResponseCode(Static):
     def set_text(self, text, display_text):
         self._raw_text = text
         self._display_text = display_text
-        self.update(self._display_text)
+        self.update(
+            MinimalMarkdown(self._raw_text, hyperlinks=False, code_theme="nord-darker")
+        )
 
 
 class ResponseText(Static):
@@ -88,7 +93,7 @@ class ResponseText(Static):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._raw_text = ""
-        self._display_text = ""
+        self._display_text: Reactive = Reactive("")
 
     def on_click(self) -> None:
         """Visual feedback if copy successful"""
@@ -102,7 +107,9 @@ class ResponseText(Static):
     def set_text(self, text, display_text):
         self._raw_text = text
         self._display_text = display_text
-        self.update(self._display_text)
+        self.update(
+            MinimalMarkdown(self._raw_text, hyperlinks=False, code_theme="nord-darker")
+        )
 
 
 class MyTextArea(TextArea):
