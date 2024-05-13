@@ -45,6 +45,13 @@ elif [ "$1" = "stop" ]; then
         echo "no chat_term session found"
     fi
 
+elif [ "$1" = "update" ]; then
+    tmux kill-session -t chat_term
+    echo "updating from poetry.lock..."
+    cd "$PROJECT_FOLDER" && git checkout master && git pull
+    poetry install
+    echo "Update complete. You can restart chat_term now"
+
 else
     echo "unknown argument: $1"
     echo "try 'chat --help' for more information"
