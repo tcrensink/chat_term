@@ -4,16 +4,14 @@ import json
 from openai import AsyncOpenAI
 import pyperclip
 from textual.binding import Binding
-from textual import work
+from textual import events, work
 from textual.app import App, ComposeResult
 from textual.widgets import Footer, Static, Label, TextArea
 from textual.containers import VerticalScroll
-from textual import events
 from textual.reactive import var
-from parse_utils import parse_text
+from parse_utils import parse_text, MinimalMarkdown
 from textual.reactive import Reactive
 from rich.style import Style
-from parse_utils import parse_text, MinimalMarkdown
 
 # stores chat history until reset.
 SESSION_CONTEXT = {
