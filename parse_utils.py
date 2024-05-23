@@ -1,12 +1,17 @@
-import marko
 import re
-import copy
+import marko
 from marko import inline
 from marko.block import BlockElement, FencedCode
 from marko.source import Source
-from typing import TYPE_CHECKING, Any, Match, NamedTuple
-from rich.markdown import Markdown
-from rich.markdown import TextElement, Token, Console, ConsoleOptions, RenderResult
+from typing import NamedTuple
+from rich.markdown import (
+    Console,
+    ConsoleOptions,
+    Markdown,
+    TextElement,
+    Token,
+    RenderResult,
+)
 from rich.text import Text
 
 
