@@ -1,21 +1,14 @@
-[tool.poetry]
+[project]
 name = "chat-term"
 version = "0.1.1"
 description = "fast terminal access to chat client"
 authors = ["tcrensink <thomas.rensink@gmail.com>"]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-openai = "^1.3.0"
-pyperclip = "^1.8.2"
-textual = "^0.58"
-marko = "2.0.3"
-
-[tool.poetry.group.dev.dependencies]
-ipython = "^8.17.2"
-requests = "^2.31.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.10"
+dependencies = [
+    "ipython>=8.34.0",
+    "marko>=2.1.2",
+    "openai>=1.70.0",
+    "pyperclip>=1.9.0",
+    "textual==0.58",
+]
