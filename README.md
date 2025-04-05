@@ -34,14 +34,13 @@ chat --help # displays commands as described above
 # Installation
 
 Requirements:
-- python 3.10+
+- uv
 - tmux
-- poetry
 - openai api key
 
 ```bash
 git clone https://github.com/tcrensink/chat_term.git
 cd chat_term
-python install.py
+uv run install.py
 # open new shell session to use
 ```

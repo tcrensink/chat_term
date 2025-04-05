@@ -4,7 +4,7 @@
 PROJECT_FOLDER="$(dirname "$0")"
 
 # update as needed
-TMUX_COMMAND="cd $PROJECT_FOLDER && poetry run python app.py"
+TMUX_COMMAND="cd $PROJECT_FOLDER && clear && echo 'starting chat term... ' && uv run python app.py"
 
 # # handle starting/attaching to chat_term session (no arguments)
 if [ $# -eq 0 ]; then
@@ -26,6 +26,7 @@ if [ "$1" = "--help" ]; then
     echo "chat restart    # restarts chat_term session in case of error"
     echo "chat stop       # kills tmux chat_term session"
     echo "chat ls         # list tmux sessions"
+    echo "chat update     # update to latest version"
 
 elif [ "$1" = "restart" ]; then
     tmux kill-session -t chat_term
@@ -48,9 +49,9 @@ elif [ "$1" = "stop" ]; then
 
 elif [ "$1" = "update" ]; then
     tmux kill-session -t chat_term
-    echo "updating from poetry.lock..."
+    echo "updating from lock file..."
     cd "$PROJECT_FOLDER" && git checkout master && git pull
-    poetry install
+    uv sync
     echo "Update complete. You can restart chat_term now"
 
 else
