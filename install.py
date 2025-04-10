@@ -19,7 +19,7 @@ def set_openai_key(key_string):
             secrets = json.load(fp)
     else:
         secrets = {}
-    secrets["OPENAI_API_KEY"] = key_string
+    secrets["gpt"] = key_string
     with open("secrets.json", "w") as fp:
         json.dump(secrets, fp, sort_keys=True, indent=4)
 
@@ -27,7 +27,7 @@ def set_openai_key(key_string):
 def openai_api_key_exists():
     with open("secrets.json") as fp:
         secrets = json.load(fp)
-        return bool(secrets.get("OPENAI_API_KEY"))
+        return bool(secrets.get("gpt"))
 
 
 def check_base_reqs() -> bool:
