@@ -67,16 +67,16 @@ def main():
         return
 
     resp = input(
-        "model inference configs are stored in {CONFIG_PATH} with corresponding api keys stored in {SECRETS_PATH} (continue)"
+        f"You can adjust app and model configs in {CONFIG_PATH}. `model_config` api keys are stored separately in {SECRETS_PATH} (press return to continue)"
     )
 
     if not os.path.exists(SECRETS_PATH):
         write_secrets({})
     secrets = get_secrets()
-    if not secrets["gpt"]:
+    if not secrets.get("gpt"):
         resp = input("add an OPENAI_API_KEY to use the `gpt` model config? (Y/n)\n")
         if resp == "" or resp.lower().startswith("y"):
-            api_key_resp = input("enter OPENAI_API_KEY and press return:\n")
+            api_key_resp = input("enter OPENAI_API_KEY:\n")
             secrets["gpt"] = api_key_resp
             write_secrets(secrets)
 
@@ -99,7 +99,7 @@ def main():
         else:
             print(f"shell file not found at {shell_path}.")
 
-    print("installation complete.\n\nOpen a new shell session and type `chat`!")
+    print(f"installation complete.\n\nrun `source {shell_path} and type `chat`!")
 
 
 if __name__ == "__main__":
