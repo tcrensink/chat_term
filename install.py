@@ -4,6 +4,9 @@ import subprocess
 import shutil
 
 PROJECT_FOLDER = os.path.abspath(os.path.dirname(__file__))
+SECRETS_PATH = os.path.join(PROJECT_FOLDER, "secrets.json")
+CONFIG_PATH = os.path.join(PROJECT_FOLDER, "config.jsonc")
+
 
 bash_func_str = f"""
 function chat() {{
@@ -12,22 +15,30 @@ function chat() {{
 """
 
 
-def set_openai_key(key_string):
-    # save API key to secrets.json
-    if os.path.exists("secrets.json"):
+def get_secrets():
+    """Get dictionary of secrets from file."""
+    if os.path.exists(SECRETS_PATH):
         with open("secrets.json", "r") as fp:
             secrets = json.load(fp)
-    else:
-        secrets = {}
-    secrets["gpt"] = key_string
-    with open("secrets.json", "w") as fp:
-        json.dump(secrets, fp, sort_keys=True, indent=4)
+    return secrets
 
 
-def openai_api_key_exists():
+def write_secrets(secrets_json):
+    with open(SECRETS_PATH, "w") as fp:
+        json.dump(secrets_json, fp, sort_keys=True, indent=4)
+
+
+def create_or_update_model_config_secret(model_config_id, secret):
+    """Create a secret for a model_config_id in config.jsonc."""
+    secrets = get_secrets()
+    secrets[model_config_id] = secret
+    write_secrets(secrets)
+
+
+def secret_exists(model_config_id):
     with open("secrets.json") as fp:
         secrets = json.load(fp)
-        return bool(secrets.get("gpt"))
+        return bool(secrets.get(model_config_id))
 
 
 def check_base_reqs() -> bool:
@@ -55,12 +66,19 @@ def main():
     if not check_base_reqs():
         return
 
-    if not os.path.exists("secrets.json"):
-        set_openai_key("")
-    if not openai_api_key_exists():
-        resp = input("add OPENAI_API_KEY to ./secrets.json:\n")
-        if resp:
-            set_openai_key(resp)
+    resp = input(
+        "model inference configs are stored in {CONFIG_PATH} with corresponding api keys stored in {SECRETS_PATH} (continue)"
+    )
+
+    if not os.path.exists(SECRETS_PATH):
+        write_secrets({})
+    secrets = get_secrets()
+    if not secrets["gpt"]:
+        resp = input("add an OPENAI_API_KEY to use the `gpt` model config? (Y/n)\n")
+        if resp == "" or resp.lower().startswith("y"):
+            api_key_resp = input("enter OPENAI_API_KEY and press return:\n")
+            secrets["gpt"] = api_key_resp
+            write_secrets(secrets)
 
     while True:
         shell_path = input(
@@ -68,7 +86,7 @@ def main():
         )
         shell_path = os.path.expanduser(shell_path)
         if shell_path == "":
-            print("chat command not added.")
+            print("chat command not added!")
             break
         elif os.path.exists(shell_path):
             try:
