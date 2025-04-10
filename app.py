@@ -1,23 +1,15 @@
-#!/usr/bin/env python
 import os
 import json
 from openai import AsyncOpenAI
 import pyperclip
 from textual.binding import Binding
-from textual import events, work
+from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Static, Label, TextArea
+from textual.widgets import Footer, Static, TextArea
 from textual.containers import VerticalScroll
 from textual.reactive import var
 from parse_utils import parse_text, MinimalMarkdown
 from textual.reactive import Reactive
-from rich.style import Style
-
-# stores chat history until reset.
-SESSION_CONTEXT = {
-    "role": "system",
-    "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified.",
-}
 
 try:
     BASE_PATH = os.path.dirname(__file__)
@@ -25,9 +17,11 @@ except NameError:
     BASE_PATH = os.getcwd()
 
 with open(os.path.join(BASE_PATH, "config.jsonc")) as fp:
+    # pull the config dict and generate "model_config" based on the active model config
     lines = fp.readlines()
     json_str = "".join([line for line in lines if not line.lstrip().startswith("//")])
     CONFIG = json.loads(json_str)
+    CONFIG["model_config"] = CONFIG["model_configs"][CONFIG["active_model_config"]]
 
 
 def copy_to_clipboard(text):
@@ -40,15 +34,17 @@ def copy_to_clipboard(text):
     return True
 
 
-def get_key():
-    """Return the open ai api key."""
+def get_key(model_config_id):
+    # """Return the api key for a model_config_id."""
     secrets_file = os.path.join(BASE_PATH, "secrets.json")
     with open(secrets_file) as fp:
         secrets = json.load(fp)
-        openai_api_key = secrets.get("OPENAI_API_KEY")
-        if not openai_api_key:
-            raise Exception("you must provide your OPENAI_API_KEY in secrets.json")
-    return openai_api_key
+        api_key = secrets.get(model_config_id)
+        if not api_key:
+            raise Exception(
+                f"error retrieving api key for model config `{model_config_id}` from secrets.json"
+            )
+    return api_key
 
 
 class InputText(Static):
@@ -125,7 +121,7 @@ class ChatApp(App):
         Binding("ctrl+c", "", "", show=False)
     ]
 
-    chat_history = [SESSION_CONTEXT]
+    chat_history = [CONFIG["model_config"]["session_context"]]
 
     expanded_input = var(False)
 
@@ -152,7 +148,7 @@ class ChatApp(App):
         self.query_one(MyTextArea).focus()
 
     def action_reset_chat_session(self) -> None:
-        self.chat_history = [SESSION_CONTEXT]
+        self.chat_history = [CONFIG["model_config"]["session_context"]]
         window = self.query_one("#content_window")
         window.query("InputText").remove()
         window.query("ResponseText").remove()
@@ -191,10 +187,13 @@ class ChatApp(App):
     async def issue_query(self, query_str: str) -> None:
         """Query chat gpt."""
         self.action_add_query(query_str=query_str)
-        client = AsyncOpenAI(api_key=get_key())
+        client = AsyncOpenAI(
+            api_key=get_key(CONFIG["active_model_config"]),
+            base_url=CONFIG["model_config"].get("base_url"),
+        )
         stream = await client.chat.completions.create(
             messages=self.chat_history,
-            model=CONFIG["model"],
+            model=CONFIG["model_config"]["model_name"],
             stream=True,
         )
         await self.render_response(stream)
