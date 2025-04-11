@@ -1,5 +1,5 @@
 # ChatTerm
-A terminal client for ChatGPT. Just type `chat`:
+An LLM terminal client. Just type `chat`:
 
 
 https://github.com/tcrensink/chat_term/assets/26497809/f4a1603d-3daa-4e00-8869-e972b74192f3
