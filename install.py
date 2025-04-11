@@ -1,11 +1,10 @@
 import json
 import os
-import subprocess
 import shutil
 
 PROJECT_FOLDER = os.path.abspath(os.path.dirname(__file__))
 SECRETS_PATH = os.path.join(PROJECT_FOLDER, "secrets.json")
-CONFIG_PATH = os.path.join(PROJECT_FOLDER, "config.jsonc")
+CONFIG_PATH = os.path.join(PROJECT_FOLDER, "config.json")
 
 
 bash_func_str = f"""
@@ -29,7 +28,7 @@ def write_secrets(secrets_json):
 
 
 def create_or_update_model_config_secret(model_config_id, secret):
-    """Create a secret for a model_config_id in config.jsonc."""
+    """Create a secret for a model_config_id in config.json."""
     secrets = get_secrets()
     secrets[model_config_id] = secret
     write_secrets(secrets)
@@ -67,7 +66,7 @@ def main():
         return
 
     resp = input(
-        f"You can adjust app and model configs in {CONFIG_PATH}. `model_config` api keys are stored separately in {SECRETS_PATH} (press return to continue)"
+        f"Adjust model configs here: {CONFIG_PATH}\nCorresponding api keys are stored in {SECRETS_PATH}\n(press return)\n"
     )
 
     if not os.path.exists(SECRETS_PATH):
@@ -86,7 +85,8 @@ def main():
         )
         shell_path = os.path.expanduser(shell_path)
         if shell_path == "":
-            print("chat command not added!")
+            print("chat command not added to bash file")
+            print(f"chat_term can also be run: `cd {PROJECT_FOLDER} && uv run app.py`")
             break
         elif os.path.exists(shell_path):
             try:
@@ -99,7 +99,9 @@ def main():
         else:
             print(f"shell file not found at {shell_path}.")
 
-    print(f"installation complete.\n\nrun `source {shell_path} and type `chat`!")
+    print("installation complete")
+    if shell_path:
+        print("run `source {shell_path}` and type `chat`")
 
 
 if __name__ == "__main__":
