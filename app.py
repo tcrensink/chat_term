@@ -16,7 +16,7 @@ try:
 except NameError:
     BASE_PATH = os.getcwd()
 
-with open(os.path.join(BASE_PATH, "config.jsonc")) as fp:
+with open(os.path.join(BASE_PATH, "config.json")) as fp:
     # pull the config dict and generate "model_config" based on the active model config
     lines = fp.readlines()
     json_str = "".join([line for line in lines if not line.lstrip().startswith("//")])

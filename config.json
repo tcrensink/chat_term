@@ -1,4 +1,5 @@
 {
+    // "active_model_config": "llama3_8b",
     "active_model_config": "gpt",
     "model_configs": {
         "gpt": {
@@ -11,7 +12,7 @@
         },
         "llama3_8b": {
             "model_name": "meta-llama/meta-Llama-3.1-8B-Instruct",
-            "base_url": "<add server url here>",
+            "base_url": "https://clos8ylp7nplyw-8000.proxy.runpod.net/v1",
             "session_context": {
                 "role": "system",
                 "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
