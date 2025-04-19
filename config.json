@@ -1,22 +1,36 @@
 {
-    // "active_model_config": "llama3_8b",
-    "active_model_config": "gpt",
+    "active_model_config": "claude",
+    // "active_model_config": "gpt-4o",
     "model_configs": {
-        "gpt": {
+        "claude": {
+            "model_name": "claude-3-7-sonnet-20250219",
+            "base_url": "https://api.anthropic.com/v1/",
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
+        },
+        "gpt-4o": {
             "model_name": "gpt-4o",
             "base_url": null,
-            "session_context": {
-                "role": "system",
-                "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
-            }
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
         },
-        "llama3_8b": {
-            "model_name": "meta-llama/meta-Llama-3.1-8B-Instruct",
-            "base_url": "https://clos8ylp7nplyw-8000.proxy.runpod.net/v1",
-            "session_context": {
-                "role": "system",
-                "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
-            }
+        "self-hosted_llama3.1-8b-instruct": {
+            "model_name": "meta-llama/Llama-3.1-8B-Instruct",
+            "base_url": "https://api.runpod.ai/v2/2gx3gfdx5oa3pt/openai/v1",
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
         }
     },
     "show_line_numbers": false,

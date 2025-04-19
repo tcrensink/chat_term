@@ -121,7 +121,7 @@ class ChatApp(App):
         Binding("ctrl+c", "", "", show=False)
     ]
 
-    chat_history = [CONFIG["model_config"]["session_context"]]
+    chat_history = CONFIG["model_config"]["session_context"]
 
     expanded_input = var(False)
 
@@ -148,7 +148,7 @@ class ChatApp(App):
         self.query_one(MyTextArea).focus()
 
     def action_reset_chat_session(self) -> None:
-        self.chat_history = [CONFIG["model_config"]["session_context"]]
+        self.chat_history = CONFIG["model_config"]["session_context"]
         window = self.query_one("#content_window")
         window.query("InputText").remove()
         window.query("ResponseText").remove()
@@ -214,7 +214,11 @@ class ChatApp(App):
         current_widget = None
 
         async for part in stream:
-            text_chunk = part.choices[0].delta.content or ""
+            if part.choices:
+                text_chunk = part.choices[0].delta.content or ""
+            else:
+                text_chunk = ""
+
             response_text += text_chunk
             curr_text += text_chunk
             outputs = parse_text(curr_text)

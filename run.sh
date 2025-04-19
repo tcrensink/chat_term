@@ -27,7 +27,7 @@ if [ "$1" = "--help" ]; then
     echo "chat stop       # kills tmux chat_term session"
     echo "chat ls         # list tmux sessions"
     echo "chat update     # update to latest version"
-    echo "chat configs    # show paths to config and secret files"
+    echo "chat config     # show paths to config and secret files"
 
 elif [ "$1" = "restart" ]; then
     tmux kill-session -t chat_term
@@ -53,11 +53,17 @@ elif [ "$1" = "update" ]; then
     uv sync
     echo "Update complete. You can restart chat_term now"
 
-elif [ "$1" = "configs" ]; then
+elif [ "$1" = "config" ]; then
     echo "$PROJECT_FOLDER/config.json"
     echo "$PROJECT_FOLDER/secrets.json"
 
 else
     echo "unknown argument: $1"
-    echo "try 'chat --help' for more information"
+    echo "available options:"
+    echo "chat            # starts or connects to chat_term session"
+    echo "chat restart    # restarts chat_term session in case of error"
+    echo "chat stop       # kills tmux chat_term session"
+    echo "chat ls         # list tmux sessions"
+    echo "chat update     # update to latest version"
+    echo "chat config     # show paths to config and secret files"
 fi
