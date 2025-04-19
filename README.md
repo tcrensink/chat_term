@@ -37,7 +37,7 @@ chat update # fetch the latest version of chat term
 Requirements:
 - [uv package manager](https://docs.astral.sh/uv/getting-started/installation/)
 - [tmux](https://github.com/tmux/tmux/wiki/Installing)
-- openai `api key` or [url of a vllm served model](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#openai-compatible-server)
+- any OpenAI SDK compatible model server (openai, anthropic, vllm,...) 
 
 ```bash
 git clone https://github.com/tcrensink/chat_term.git
