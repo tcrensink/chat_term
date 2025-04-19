@@ -4,7 +4,7 @@
 PROJECT_FOLDER="$(dirname "$0")"
 
 # update as needed
-TMUX_COMMAND="cd $PROJECT_FOLDER && clear && echo 'starting chat term... ' && uv run python app.py"
+TMUX_COMMAND="cd $PROJECT_FOLDER && clear && echo 'starting chat term... ' && uv run app.py"
 
 # # handle starting/attaching to chat_term session (no arguments)
 if [ $# -eq 0 ]; then
@@ -27,6 +27,7 @@ if [ "$1" = "--help" ]; then
     echo "chat stop       # kills tmux chat_term session"
     echo "chat ls         # list tmux sessions"
     echo "chat update     # update to latest version"
+    echo "chat config     # show paths to config and secret files"
 
 elif [ "$1" = "restart" ]; then
     tmux kill-session -t chat_term
@@ -38,7 +39,6 @@ elif [ "$1" = "ls" ]; then
     else
         echo "$output"
     fi
-
 elif [ "$1" = "stop" ]; then
     tmux kill-session -t chat_term
     if [ $? -eq 0 ]; then
@@ -46,7 +46,6 @@ elif [ "$1" = "stop" ]; then
     else
         echo "no chat_term session found"
     fi
-
 elif [ "$1" = "update" ]; then
     tmux kill-session -t chat_term
     echo "updating from lock file..."
@@ -54,7 +53,17 @@ elif [ "$1" = "update" ]; then
     uv sync
     echo "Update complete. You can restart chat_term now"
 
+elif [ "$1" = "config" ]; then
+    echo "$PROJECT_FOLDER/config.json"
+    echo "$PROJECT_FOLDER/secrets.json"
+
 else
     echo "unknown argument: $1"
-    echo "try 'chat --help' for more information"
+    echo "available options:"
+    echo "chat            # starts or connects to chat_term session"
+    echo "chat restart    # restarts chat_term session in case of error"
+    echo "chat stop       # kills tmux chat_term session"
+    echo "chat ls         # list tmux sessions"
+    echo "chat update     # update to latest version"
+    echo "chat config     # show paths to config and secret files"
 fi

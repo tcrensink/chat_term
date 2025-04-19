@@ -1,0 +1,67 @@
+{
+    "active_model_config": "claude",
+    // "active_model_config": "gpt-4o",
+    "model_configs": {
+        "claude": {
+            "model_name": "claude-3-7-sonnet-20250219",
+            "base_url": "https://api.anthropic.com/v1/",
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
+        },
+        "gpt-4o": {
+            "model_name": "gpt-4o",
+            "base_url": null,
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
+        },
+        "self-hosted_llama3.1-8b-instruct": {
+            "model_name": "meta-llama/Llama-3.1-8B-Instruct",
+            "base_url": "https://api.runpod.ai/v2/2gx3gfdx5oa3pt/openai/v1",
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
+        }
+    },
+    "show_line_numbers": false,
+    // https://textual.textualize.io/guide/input/#bindings or `$ textual keys`
+    // keybindings are bound to e.g. `action_copy_text(self)`
+    "keybindings": [
+        [
+            "ctrl+p",
+            "submit()",
+            "submit"
+        ],
+        [
+            "ctrl+o",
+            "toggle_input",
+            "expand text area"
+        ],
+        [
+            "ctrl+r",
+            "reset_chat_session()",
+            "reset session"
+        ],
+        [
+            "ctrl+l",
+            "focus_input()",
+            "focus input"
+        ],
+        [
+            // "quit" binding should match tmux.conf
+            "ctrl+x",
+            "quit",
+            "detach"
+        ]
+    ]
+}
