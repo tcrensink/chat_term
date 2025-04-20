@@ -30,6 +30,7 @@ chat restart # restart new chat_term session
 chat stop # kill chat_term session
 chat --help # displays commands as described above
 chat update # fetch the latest version of chat term
+chat config # show paths to config files
 ```
 
 # Installation
@@ -37,7 +38,7 @@ chat update # fetch the latest version of chat term
 Requirements:
 - [uv package manager](https://docs.astral.sh/uv/getting-started/installation/)
 - [tmux](https://github.com/tmux/tmux/wiki/Installing)
-- any OpenAI SDK compatible model server (openai, anthropic, vllm, ...) 
+- access to an OpenAI SDK compatible model (OpenAI, Anthropic, vLLM, ...) 
 
 ```bash
 git clone https://github.com/tcrensink/chat_term.git
