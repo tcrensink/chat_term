@@ -121,7 +121,7 @@ class ChatApp(App):
         Binding("ctrl+c", "", "", show=False)
     ]
 
-    chat_history = CONFIG["model_config"]["session_context"]
+    chat_history = CONFIG["model_config"]["session_context"].copy()
 
     expanded_input = var(False)
 
@@ -148,7 +148,7 @@ class ChatApp(App):
         self.query_one(MyTextArea).focus()
 
     def action_reset_chat_session(self) -> None:
-        self.chat_history = CONFIG["model_config"]["session_context"]
+        self.chat_history = CONFIG["model_config"]["session_context"].copy()
         window = self.query_one("#content_window")
         window.query("InputText").remove()
         window.query("ResponseText").remove()
