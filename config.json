@@ -1,17 +1,6 @@
 {
-    "active_model_config": "claude",
-    // "active_model_config": "gpt-4o",
+    "active_model_config": "gpt-4o",
     "model_configs": {
-        "claude": {
-            "model_name": "claude-3-7-sonnet-20250219",
-            "base_url": "https://api.anthropic.com/v1/",
-            "session_context": [
-                {
-                    "role": "system",
-                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
-                }
-            ]
-        },
         "gpt-4o": {
             "model_name": "gpt-4o",
             "base_url": null,
@@ -22,9 +11,29 @@
                 }
             ]
         },
-        "self-hosted_llama3.1-8b-instruct": {
-            "model_name": "meta-llama/Llama-3.1-8B-Instruct",
-            "base_url": "https://api.runpod.ai/v2/2gx3gfdx5oa3pt/openai/v1",
+        "claude": {
+            "model_name": "claude-3-7-sonnet-20250219",
+            "base_url": "https://api.anthropic.com/v1/",
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
+        },
+        "ollama_llama3.1": {
+            "model_name": "llama3.1",
+            "base_url": "http://localhost:11434/v1",
+            "session_context": [
+                {
+                    "role": "system",
+                    "content": "You are a large language model. Answer as accurately and concisely as possible. If you are not sure, just say 'I don't know'. Respond in markdown (without backticks) unless otherwise specified."
+                }
+            ]
+        },
+        "vllm_llama3.1-8b-instruct": {
+            "model_name": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+            "base_url": "http://localhost:8000/v1",
             "session_context": [
                 {
                     "role": "system",
