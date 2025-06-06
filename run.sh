@@ -1,10 +1,9 @@
 #! /bin/bash
+# a tmux wrapper to start/re-attach to chat term
 
-# manages tmux session for fast access
 PROJECT_FOLDER="$(dirname "$0")"
-
-# update as needed
-TMUX_COMMAND="cd $PROJECT_FOLDER && clear && echo 'starting chat term... ' && uv run app.py"
+TMUX_COMMAND="cd $PROJECT_FOLDER && clear && echo 'starting chat term... ' && uv run app.py && (
+clear && echo '> chat_term encounted an error and is closing!' && sleep 2 && tmux kill-session -t chat_term)"
 
 # # handle starting/attaching to chat_term session (no arguments)
 if [ $# -eq 0 ]; then
