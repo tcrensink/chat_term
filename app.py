@@ -9,6 +9,7 @@ from textual.widgets import Footer, Static, TextArea
 from textual.containers import VerticalScroll
 from textual.reactive import var
 from parse_utils import parse_text, MinimalMarkdown
+from rich.syntax import Syntax as RichSyntax
 from textual.reactive import Reactive
 
 try:
@@ -73,12 +74,10 @@ class ResponseCode(Static):
                 attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
             )
 
-    def set_text(self, text, display_text):
+    def set_text(self, text, display_text, lang=""):
         self._raw_text = text
         self._display_text = display_text
-        self.update(
-            MinimalMarkdown(self._raw_text, hyperlinks=False, code_theme="nord-darker")
-        )
+        self.update(RichSyntax(display_text, lang or "text", theme="nord-darker"))
 
 
 class ResponseText(Static):
@@ -98,7 +97,7 @@ class ResponseText(Static):
                 attribute="opacity", value=1.0, duration=0.3, easing="out_expo"
             )
 
-    def set_text(self, text, display_text):
+    def set_text(self, text, display_text, lang=""):
         self._raw_text = text
         self._display_text = display_text
         self.update(
@@ -107,9 +106,7 @@ class ResponseText(Static):
 
 
 class MyTextArea(TextArea):
-    BINDINGS = [tuple(k) for k in CONFIG["keybindings"]] + [
-        Binding("ctrl+c", "", "", show=False)
-    ]
+    BINDINGS = [Binding("ctrl+c", "", "", show=False)]
     show_line_numbers = CONFIG["show_line_numbers"]
 
 
@@ -235,7 +232,7 @@ class ChatApp(App):
                 # always update first (often only) widget
                 text = outputs[0]["raw_text"]
                 display_text = outputs[0]["display_text"]
-                current_widget.set_text(text, display_text)
+                current_widget.set_text(text, display_text, outputs[0].get("lang", ""))
 
                 # create new widgets for each additional output; make last one current_widget
                 for output in outputs[1:]:
@@ -245,7 +242,7 @@ class ChatApp(App):
                         current_widget = ResponseCode()
                     else:
                         current_widget = ResponseText()
-                    current_widget.set_text(text, display_text)
+                    current_widget.set_text(text, display_text, output.get("lang", ""))
                     self.action_add_response_widget(current_widget)
                 # curr_text set by last widget
                 curr_text = outputs[-1]["raw_text"]

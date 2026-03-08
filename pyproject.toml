@@ -7,7 +7,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "ipython>=8.34.0",
-    "marko>=2.1.2",
     "openai>=1.70.0",
     "pyperclip>=1.9.0",
     "textual==0.58",
